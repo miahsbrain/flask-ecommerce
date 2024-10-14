@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^3.4.13"
+  },
+  "scripts": {
+    "tw-watch-app": "tailwindcss -i ./app/static/app/css/input.css -o ./app/static/app/css/style.css --watch",
+    "tw-watch-core": "tailwindcss -i ./core/static/core/css/input.css -o ./core/static/core/css/style.css --watch",
+    "tw-watch-admin": "tailwindcss -i ./admin/static/admin/css/input.css -o ./admin/static/admin/css/style.css --watch",
+    "tw-build-app": "tailwindcss -i ./app/static/app/css/input.css -o ./app/static/app/css/style.css",
+    "tw-build-core": "tailwindcss -i ./core/static/core/css/input.css -o ./core/static/core/css/style.css",
+    "tw-build-admin": "tailwindcss -i ./admin/static/admin/css/input.css -o ./admin/static/admin/css/style.css"
+  }
+}
