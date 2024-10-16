@@ -1,10 +1,62 @@
 {% extends 'app/base.html' %}
 {% block title %}
-    APP/INDEX
+    Home
 {% endblock %}
 {% block head %}
     
 {% endblock %}
 {% block content %}
-    APP/INDEX
+<section class="h-full w-full relative">
+    <section class="relative md:flex table w-full items-center h-screen py-36">
+        <div class="h-full w-full absolute inset-0">
+            <img src="{{ url_for('app.static', filename='app/img/hero/bg4.jpg') }}" class="object-cover object-center" alt="">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t to-transparent via-slate-900/50 from-slate-900/90"></div>
+        <div class="container mx-auto relative h-full">
+            <div class="grid grid-cols-1 h-full place-items-center">
+                <div class="text-center">
+                    <span class="uppercase font-semibold text-lg text-white">Top Collection</span>
+                    <h4 class="md:text-6xl text-4xl md:leading-normal leading-normal font-bold text-white my-3">Shine Bright</h4>
+                    <p class="text-lg text-white/70">Our latest collection of essential basics.</p>
+
+                    <div class="mt-6">
+                        <a href="" class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-center bg-white text-primary rounded-md">Shop Now &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Other stuff -->
+    <section class="relative md:py-24 py-16">
+        <div class="container mx-auto relative px-3">
+            <div class="grid grid-cols-1 justify-center text-center mb-6">
+                <h5 class="font-semibold text-3xl leading-normal mb-4">Shop The Collections</h5>
+                <p class="text-slate-400 max-w-xl mx-auto">Shop the latest products from the most popular collections</p>
+            </div>
+            <!-- Categories -->
+            <div class="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 pt-6 gap-6 place-items-center">
+                <a href="" class="text-center hover:text-primary aspect-square object-cover object-center">
+                    <img src="{{ url_for('app.static', filename='app/img/categories/mens-ware.jpg') }}" class="rounded-full shadow dark:shadow-gray-800" alt="">
+                    <span class="text-xl font-medium mt-3 block">Men's Wear</span>
+                </a>
+                <a href="" class="text-center hover:text-primary aspect-square object-cover object-center">
+                    <img src="{{ url_for('app.static', filename='app/img/categories/ladies-ware.jpg') }}" class="rounded-full shadow dark:shadow-gray-800" alt="">
+                    <span class="text-xl font-medium mt-3 block">Ladies Wear</span>
+                </a>
+                <a href="" class="text-center hover:text-primary aspect-square object-cover object-center">
+                    <img src="{{ url_for('app.static', filename='app/img/categories/kids-ware.jpg') }}" class="rounded-full shadow dark:shadow-gray-800" alt="">
+                    <span class="text-xl font-medium mt-3 block">Kids Wear</span>
+                </a>
+                <a href="" class="text-center hover:text-primary aspect-square object-cover object-center">
+                    <img src="{{ url_for('app.static', filename='app/img/categories/smart-watch.jpg') }}" class="rounded-full shadow dark:shadow-gray-800" alt="">
+                    <span class="text-xl font-medium mt-3 block">Smart Watch</span>
+                </a>
+                <a href="" class="text-center hover:text-primary aspect-square object-cover object-center">
+                    <img src="{{ url_for('app.static', filename='app/img/categories/sunglasses.jpg') }}" class="rounded-full shadow dark:shadow-gray-800" alt="">
+                    <span class="text-xl font-medium mt-3 block">Sunglasses</span>
+                </a>
+            </div>
+        </div>
+    </section>
+</section>
 {% endblock %}
