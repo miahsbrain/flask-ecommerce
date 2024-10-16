@@ -106,15 +106,6 @@ def signout():
     logout_user()
     return redirect(url_for('core.index'))
 
-@app.route('/newpost')
+@app.route('/account')
 def newpost():
-    return render_template('app/newpost.html')
-
-@app.route('/generate', methods=['GET', 'POST'])
-def generate():
-    data = request.get_json()
-    url_one = data.get('url_one')
-    if not url_one:
-        url_one = 'https://quotes.toscrape.com/random'
-    urls = [url_one, ]
-    return Response(task_manager.process_request(urls=urls), content_type='text/event-stream')
+    return render_template('app/account.html')

@@ -199,3 +199,17 @@
 .btn:disabled {
     pointer-events: none
 }
+
+.blurred {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+svg {
+    @apply w-full h-full;
+}
+img {
+    @apply w-full h-full;
+}
+.link-active {
+    @apply text-primary;
+}
