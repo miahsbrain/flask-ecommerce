@@ -56,7 +56,7 @@ def signup():
         return render_template('app/signup.html')
 
 @app.route('/settings', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def settings():
     data = request.form
     if data.get('action') == 'picture-form':
@@ -107,5 +107,17 @@ def signout():
     return redirect(url_for('core.index'))
 
 @app.route('/account')
-def newpost():
+def account():
     return render_template('app/account.html')
+
+@app.route('/billing')
+def billing():
+    return render_template('app/billing.html')
+
+@app.route('/payment')
+def payment():
+    return render_template('app/payment.html')
+
+@app.route('/social')
+def social():
+    return render_template('app/social.html')
