@@ -121,3 +121,7 @@ def payment():
 @app.route('/social')
 def social():
     return render_template('app/social.html')
+
+@app.route('/shop')
+def shop():
+    return render_template('app/shop.html')
