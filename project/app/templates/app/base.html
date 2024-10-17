@@ -39,11 +39,31 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="size-9 aspect-square rounded-full overflow-hidden bg-primary text-white p-2 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                    d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14" />
-                            </svg>
+                        <div class="relative" x-data="{ dropDown : false }">
+                            <div
+                            class="size-9 aspect-square rounded-full overflow-hidden bg-primary text-white p-2 cursor-pointer"
+                            @click=" dropDown =! dropDown "
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14" />
+                                </svg>
+                            </div>
+                            <!-- Search dropdown -->
+                            <div 
+                            class="absolute overflow-hidden end-0 m-0 mt-5 z-10 md:w-52 w-48 rounded-md bg-white dark:bg-slate-900 shadow dark:shadow-gray-800"
+                            x-cloak
+                            x-show="dropDown"
+                            @click.outside=" dropDown = false "
+                            >
+                                <div class="relative">
+                                    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="absolute size-4 top-[9px] end-3 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                    <input type="text" class="h-9 px-3 pe-10 w-full border-0 focus:ring-0 outline-none bg-white dark:bg-slate-900" name="s" id="searchItem" placeholder="Search...">
+                                </div>
+                            </div>
                         </div>
                         <div class="size-9 aspect-square rounded-full overflow-hidden bg-primary text-white p-2 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -57,8 +77,97 @@
                                     d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3" />
                             </svg>
                         </div>
-                        <div class="size-9 aspect-square rounded-full overflow-hidden border border-primary cursor-pointer">
-                            <img src="{{ url_for('app.static', filename='app/img/login.jpg') }}" alt="">
+                        <div class="relative" x-data="{ dropDown : false }">
+                            <div
+                            class="size-9 aspect-square rounded-full overflow-hidden border border-primary cursor-pointer"
+                            @click=" dropDown =! dropDown "
+                            >
+                                <img src="{{ url_for('app.static', filename='app/img/login.jpg') }}" alt="">
+                            </div>
+                            <!-- Account dropdown -->
+                            <div
+                            class="absolute end-0 m-0 mt-5 z-0 w-48 rounded-md overflow-hidden bg-white dark:bg-slate-900 shadow dark:shadow-gray-700"
+                            x-cloak
+                            x-show="dropDown"
+                            @click.outside=" dropDown = false "
+                            >
+                            {% if current_user.is_authenticated %}
+                            <ul class="py-2 text-start">
+                                <li class="ms-0">
+                                    <p class="text-slate-400 pt-2 px-4">{{ current_user.first_name }}</p>
+                                </li>
+                                <li class="ms-0">
+                                    <p class="flex items-center font-medium py-2 px-4">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                        </svg>Balance: <span class="text-primary ms-2">$ 245.10</span>
+                                    </p>
+                                </li>
+                                <li class="ms-0">
+                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>Account
+                                    </a>
+                                </li>
+                                <li class="ms-0">
+                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>Helpcenter
+                                    </a>
+                                </li>
+                                <li class="ms-0">
+                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
+                                            stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                            <path
+                                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                            </path>
+                                        </svg>Settings
+                                    </a>
+                                </li>
+                                <li class="border-t border-gray-100 dark:border-gray-800 my-2"></li>
+                                <li class="ms-0">
+                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
+                                            stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                            <polyline points="16 17 21 12 16 7"></polyline>
+                                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                                        </svg>Logout
+                                    </a>
+                                </li>
+                            </ul>
+                            {% else %}
+                            <ul class="py-2 text-start">
+                                <li class="ms-0">
+                                    <p class="text-slate-400 pt-2 px-4">You're not signed in</p>
+                                </li>
+                                <li class="ms-0">
+                                    <a class="flex items-center font-medium py-2 px-4 mt-2 mx-2 bg-primary hover:bg-primary/90 rounded-md dark:text-white/70 hover:text-white dark:hover:text-white" href="{{ url_for('app.signin') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" class="size-5 me-2" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M10.3 7.7a.984.984 0 0 0 0 1.4l1.9 1.9H3c-.55 0-1 .45-1 1s.45 1 1 1h9.2l-1.9 1.9a.984.984 0 0 0 0 1.4c.39.39 1.01.39 1.4 0l3.59-3.59a.996.996 0 0 0 0-1.41L11.7 7.7a.984.984 0 0 0-1.4 0M20 19h-7c-.55 0-1 .45-1 1s.45 1 1 1h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-7c-.55 0-1 .45-1 1s.45 1 1 1h7z" />
+                                        </svg>Sign in
+                                    </a>
+                                </li>
+                                <li class="ms-0">
+                                    <a class="flex items-center font-medium py-2 px-4 mt-2 mx-2 bg-primary hover:bg-primary/90 rounded-md dark:text-white/70 hover:text-white dark:hover:text-white" href="{{ url_for('app.signup') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" class="size-5 me-2" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M15 4a4 4 0 0 0-4 4a4 4 0 0 0 4 4a4 4 0 0 0 4-4a4 4 0 0 0-4-4m0 1.9a2.1 2.1 0 1 1 0 4.2A2.1 2.1 0 0 1 12.9 8A2.1 2.1 0 0 1 15 5.9M4 7v3H1v2h3v3h2v-3h3v-2H6V7zm11 6c-2.67 0-8 1.33-8 4v3h16v-3c0-2.67-5.33-4-8-4m0 1.9c2.97 0 6.1 1.46 6.1 2.1v1.1H8.9V17c0-.64 3.1-2.1 6.1-2.1" />
+                                        </svg>Sign up
+                                    </a>
+                                </li>
+                            </ul>
+                            {% endif %}
+                            </div>
                         </div>
                         <div class="md:hidden size-9">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
