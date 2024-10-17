@@ -38,14 +38,12 @@ def create_app():
     login_manager.anonymous_user = AnonymousUser
 
     # Import blueprints
-    from project.core.routes import core
     from project.app.routes import app
     from project.admin.routes import admin
 
 
     # Register blueprints
-    main.register_blueprint(core)
-    main.register_blueprint(app, url_prefix='/app')
+    main.register_blueprint(app, url_prefix='/')
     main.register_blueprint(admin, url_prefix='/admin')
     
     with main.app_context():

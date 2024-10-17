@@ -125,3 +125,15 @@ def social():
 @app.route('/shop')
 def shop():
     return render_template('app/shop.html')
+
+@app.route('/cart')
+def cart():
+    return render_template('app/cart.html')
+
+@app.route('/checkout')
+def checkout():
+    return render_template('app/checkout.html')
+
+@app.route('/product_detail')
+def product_detail():
+    return render_template('app/product_detail.html')
