@@ -82,7 +82,7 @@
                             class="size-9 aspect-square rounded-full overflow-hidden border border-primary cursor-pointer"
                             @click=" dropDown =! dropDown "
                             >
-                                <img src="{{ url_for('app.static', filename='app/img/login.jpg') }}" alt="">
+                                <img src="{{ current_user.get_profile_picture_url() }}" alt="">
                             </div>
                             <!-- Account dropdown -->
                             <div
@@ -94,18 +94,18 @@
                             {% if current_user.is_authenticated %}
                             <ul class="py-2 text-start">
                                 <li class="ms-0">
-                                    <p class="text-slate-400 pt-2 px-4">{{ current_user.first_name }}</p>
+                                    <p class="text-slate-400 pt-2 px-4">Hi, {{ current_user.first_name }}</p>
                                 </li>
                                 <li class="ms-0">
                                     <p class="flex items-center font-medium py-2 px-4">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                                             <line x1="12" y1="1" x2="12" y2="23"></line>
                                             <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                        </svg>Balance: <span class="text-primary ms-2">$ 245.10</span>
+                                        </svg>Balance: <span class="text-primary ms-2">$245.10</span>
                                     </p>
                                 </li>
                                 <li class="ms-0">
-                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="">
+                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="{{ url_for('app.account') }}">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                             <circle cx="12" cy="7" r="4"></circle>
@@ -122,7 +122,7 @@
                                     </a>
                                 </li>
                                 <li class="ms-0">
-                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="">
+                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="{{ url_for('app.settings') }}">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
                                             stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -135,7 +135,7 @@
                                 </li>
                                 <li class="border-t border-gray-100 dark:border-gray-800 my-2"></li>
                                 <li class="ms-0">
-                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="">
+                                    <a class="flex items-center font-medium py-2 px-4 dark:text-white/70 hover:text-primary dark:hover:text-white" href="{{ url_for('app.signout') }}">
                                         <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
                                             stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 me-2" height="1em" width="1em"
                                             xmlns="http://www.w3.org/2000/svg">

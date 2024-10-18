@@ -13,6 +13,7 @@
 
 </head>
 <body x-data class="is-header-blur">
+    {% set messages = get_flashed_messages() %}
     <!-- wrapper -->
     <div class="min-h-screen flex grow bg-slate-50 dark:bg-gray-900">
         <main class="grid w-full grow grid-cols-1 place-items-center">
@@ -24,53 +25,99 @@
                         <p class="text-slate-400 dark:text-gray-300">Please sign in to continue</p>
                     </div>
                 </div>
-                <div class="card mt-5 rounded-lg p-5 lg:p-7">
-                    <label class="block">
-                        <span class="relative mt-1.5 flex">
-                            <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-gray-450 dark:hover:border-gray-400 dark:focus:border-accent" placeholder="Enter Email" type="text">
-                            <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-gray-300  dark:peer-focus:text-accent">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5 transition-colors duration-200" fill="none"viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                    </path>
-                                </svg>
+                <form action="" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div class="card mt-5 rounded-lg p-5 lg:p-7">
+                        <label class="block">
+                            <span class="relative mt-1.5 flex">
+                                <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-gray-450 dark:hover:border-gray-400 dark:focus:border-accent" placeholder="Enter Fullname" type="text" name="fullname">
+                                <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-gray-300  dark:peer-focus:text-accent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" class="size-5 transition-colors duration-200">
+                                        <path fill="currentColor" d="M15 4a4 4 0 0 0-4 4a4 4 0 0 0 4 4a4 4 0 0 0 4-4a4 4 0 0 0-4-4m0 1.9a2.1 2.1 0 1 1 0 4.2A2.1 2.1 0 0 1 12.9 8A2.1 2.1 0 0 1 15 5.9M4 7v3H1v2h3v3h2v-3h3v-2H6V7zm11 6c-2.67 0-8 1.33-8 4v3h16v-3c0-2.67-5.33-4-8-4m0 1.9c2.97 0 6.1 1.46 6.1 2.1v1.1H8.9V17c0-.64 3.1-2.1 6.1-2.1" />
+                                    </svg>
+                                </span>
                             </span>
-                        </span>
-                    </label>
-                    <label class="block">
-                        <span class="relative mt-1.5 flex">
-                            <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-gray-450 dark:hover:border-gray-400 dark:focus:border-accent" placeholder="Enter Username" type="password">
-                            <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-gray-300  dark:peer-focus:text-accent">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5 transition-colors duration-200" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
+                            {% for message in messages %}
+                                {% if message['f_name'] %}
+                                <p class="text-red-600 text-sm mt-1">{{ message['f_name'] }}</p>
+                                {% endif %}
+                                {% if message['l_name'] %}
+                                <p class="text-red-600 text-sm mt-1">{{ message['l_name'] }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </label>
+                        <label class="block">
+                            <span class="relative mt-1.5 flex">
+                                <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-gray-450 dark:hover:border-gray-400 dark:focus:border-accent" placeholder="Enter Email" type="text" name="email">
+                                <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-gray-300  dark:peer-focus:text-accent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5 transition-colors duration-200" fill="none"viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                </span>
                             </span>
-                        </span>
-                    </label>
-                    <label class="relative mt-4 flex">
-                        <input
-                            class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                            placeholder="Repeat Password" type="password" />
-                        <span
-                            class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 transition-colors duration-200" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </span>
-                    </label>
-                    <div class="mt-4 flex items-center space-x-2">
-                        <input class="form-checkbox is-basic size-5 rounded border-slate-400/70 checked:border-primary checked:bg-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:checked:border-accent dark:checked:bg-accent dark:hover:border-accent dark:focus:border-accent" type="checkbox" />
-                        <p class="line-clamp-1">I agree with <a href="pages-singup-1.html#" class="text-slate-400 hover:underline dark:text-navy-300">privacy policy</a></p>
+                            {% for message in messages %}
+                                {% if message['email'] %}
+                                <p class="text-red-600 text-sm mt-1">{{ message['email'] }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </label>
+                        <label class="block">
+                            <span class="relative mt-1.5 flex">
+                                <input class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-gray-450 dark:hover:border-gray-400 dark:focus:border-accent" placeholder="Enter Username" type="password" name="password">
+                                <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-gray-300  dark:peer-focus:text-accent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5 transition-colors duration-200" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </span>
+                            </span>
+                            {% for message in messages %}
+                                {% if message['password'] %}
+                                <p class="text-red-600 text-sm mt-1">{{ message['password'] }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </label>
+                        <div>
+                            <label class="relative mt-4 flex">
+                                <input
+                                    class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                    placeholder="Repeat Password" type="password" name="cpassword"/>
+                                <span
+                                    class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5 transition-colors duration-200" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </span>
+                            </label>
+                            {% for message in messages %}
+                                {% if message['c_password'] %}
+                                <p class="text-red-600 text-sm mt-1">{{ message['c_password'] }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div> 
+                            <div class="mt-4 flex items-center space-x-2">
+                                <input class="form-checkbox is-basic size-5 rounded border-slate-400/70 checked:border-primary checked:bg-primary hover:border-primary focus:border-primary dark:border-navy-400 dark:checked:border-accent dark:checked:bg-accent dark:hover:border-accent dark:focus:border-accent" type="checkbox" name="terms" />
+                                <p class="line-clamp-1">I agree with <a href="" class="text-slate-400 hover:underline dark:text-navy-300">privacy policy</a></p>
+                            </div>
+                            {% for message in messages %}
+                                {% if message['terms'] %}
+                                <p class="text-red-600 text-sm mt-1">{{ message['terms'] }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <button class="btn mt-5 w-full bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">Sign Up</button>
+                        <div class="mt-4 text-center text-xs">
+                            <p class="line-clamp-1">
+                                <span>Already have an account? </span>
+                                <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent" href="#">Sign In</a>
+                            </p>
+                        </div>
                     </div>
-                    <button class="btn mt-5 w-full bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">Sign Up</button>
-                    <div class="mt-4 text-center text-xs">
-                        <p class="line-clamp-1">
-                            <span>Already have an account? </span>
-                            <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent" href="#">Sign In</a>
-                        </p>
-                    </div>
-                </div>
+                </form>
             </div>
         </main>
     </div>

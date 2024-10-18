@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, request, url_for
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from project.config import config
@@ -33,6 +33,14 @@ def create_app():
     @login_manager.user_loader
     def load_user(uid):
         return User.query.get(uid)
+    
+    @login_manager.unauthorized_handler
+    def unauthorized_callback():
+        # Check if the user is trying to access an admin route
+        if '/admin/' in request.path:
+            return redirect(url_for('admin.index'))
+        # Otherwise, redirect to the normal user login
+        return redirect(url_for('app.signin'))
     
     # Login manager anonymous user class
     login_manager.anonymous_user = AnonymousUser

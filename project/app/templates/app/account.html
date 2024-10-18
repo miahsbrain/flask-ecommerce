@@ -11,16 +11,19 @@
                     <div class="w-full md:px-3">
                         <div class="relative md:-mt-48 -mt-32">
                             <div class="p-6 rounded-md shadow dark:shadow-gray-800 bg-white dark:bg-slate-900">
-                                <div class="text-center mb-5">
-                                    <input id="pro-img" name="profile-image" type="file" class="hidden" onchange="loadFile(event)">
+                                <div
+                                class="text-center mb-5"
+                                x-data="profileImageHandler()"
+                                >
+                                    <input id="pro-img" name="profile-image" type="file" class="hidden" @change="uploadProfileImage">
                                     <div>
                                         <div class="relative size-28 mx-auto">
-                                            <img src="{{ url_for('app.static', filename='app/img/16.jpg') }}" class="rounded-full shadow dark:shadow-gray-800 ring-4 ring-slate-50 dark:ring-slate-800" id="profile-image" alt="">
+                                            <img :src="profileImageUrl" class="rounded-full shadow dark:shadow-gray-800 ring-4 ring-slate-50 dark:ring-slate-800" id="profile-image" alt="">
                                             <label class="absolute inset-0 cursor-pointer" for="pro-img"></label>
                                         </div>
                                         <div class="mt-4">
-                                            <h5 class="text-lg font-semibold">Jesus Zamora</h5>
-                                            <p class="text-slate-400">jesus@hotmail.com</p>
+                                            <h5 class="text-lg font-semibold">{{ current_user.get_full_name() }}</h5>
+                                            <p class="text-slate-400">{{ current_user.email }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -187,4 +190,42 @@
         </section>
     </div>
 </section>
+<script>
+    function profileImageHandler() {
+        return {
+            profileImageUrl: "{{ current_user.get_profile_picture_url() }}",  // Default profile image path
+
+            // Function to handle the profile image upload
+            uploadProfileImage(event) {
+                const file = event.target.files[0];  // Get the uploaded file
+                if (!file) return;
+
+                // Prepare the form data
+                const formData = new FormData();
+                formData.append('profile-picture', file);
+                formData.append('action', 'picture-form');
+                formData.append('csrf_token', '{{ csrf_token() }}');
+
+                // Send the file to the backend via an AJAX request
+                fetch('/update_profile_image', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Update the profile image URL to reflect the uploaded image
+                        this.profileImageUrl = data.image_url;
+                    } else {
+                        console.error(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error uploading image:', error);
+                });
+            }
+        }
+    }
+
+</script>
 {% endblock %}

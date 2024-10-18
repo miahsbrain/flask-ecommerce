@@ -1,6 +1,6 @@
-from project.extensions import db, bcrypt
+from project.extensions.dependencies import db, bcrypt
 from project.models.users import User
-from project import create_app
+from project.main import create_app
 
 def create_user():
     first_name = input('Enter your first name: ')
