@@ -53,7 +53,7 @@ def create_user(first_name, last_name, email, password, confirm_password, is_adm
     if not password:
         return (None, {'password':'Please choose a password', 'cat': 'danger'})
     if not confirm_password:
-        return (None, {'password':'Please confirm your password', 'cat': 'danger'})
+        return (None, {'c_password':'Please confirm your password', 'cat': 'danger'})
     
     # Validate email
     if len(list(User.query.filter(User.email==email))) > 0:
