@@ -30,7 +30,9 @@
             >
             <nav class="container mx-auto">
                 <div class="flex justify-between items-center">
-                    <div class="text-2xl font-bold text-gray-800 py-4">Lavender</div>
+                    <div class="text-2xl font-bold text-gray-800 py-4">
+                        <a href="{{ url_for('app.index') }}">Lavender</a>
+                    </div>
                     <div class="hidden md:block">
                         <div class="flex items-center gap-4">
                             <a href="{{ url_for('app.shop') }}" class="font-semibold hover:text-primary text-[1.1rem] p-2">Shop</a>

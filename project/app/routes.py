@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from project.utils.auth import authenticate, create_user, validate_email, update_password
 from project.extensions.dependencies import db
 from project.models.users import User, ProfilePicture
+from project.models.products import Product, ProductVariation, ProductVariationImage
 
 app = Blueprint('app', __name__, template_folder='templates', static_folder='static', static_url_path='/')
 
@@ -153,7 +154,24 @@ def social():
 
 @app.route('/shop')
 def shop():
-    return render_template('app/shop.html')
+    products = ''
+    products = Product.query.all()  # Get all products
+
+    # For each product, choose a default or first variation to display
+    product_data = []
+    for product in products:
+        if product.variations:  # Ensure the product has variations
+            primary_variation = product.variations[0]  # Default to the first variation
+            primary_image = primary_variation.images[0].image_url if primary_variation.images else '/static/default_image.jpg'
+
+            product_data.append({
+                'name': product.name,
+                'description': product.description,
+                'price': primary_variation.price,
+                'variation': f'{primary_variation.color} {primary_variation.size}',
+                'image_url': primary_image
+            })
+    return render_template('app/shop.html', products=product_data)
 
 @app.route('/cart')
 def cart():
@@ -163,6 +181,29 @@ def cart():
 def checkout():
     return render_template('app/checkout.html')
 
-@app.route('/product_detail')
-def product_detail():
-    return render_template('app/product_detail.html')
+@app.route('/product_detail/<int:product_id>')
+def product_details(product_id):
+    # Fetch the product by ID
+    product = Product.query.get_or_404(product_id)
+
+    # Prepare data for product variations and images
+    variations = []
+    for variation in product.variations:
+        images = [image.image_url for image in variation.images]
+        variations.append({
+            'id': variation.id,
+            'color': variation.color,
+            'size': variation.size,
+            'price': variation.price,
+            'images': images
+        })
+
+    product_data = {
+        'name': product.name,
+        'description': product.description,
+        'base_price': product.price,
+        'variations': variations
+    }
+    # print(product_data)
+
+    return render_template('app/product_detail.html', product=product_data)

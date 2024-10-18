@@ -1,0 +1,25 @@
+{% extends 'app/base.html' %}
+{% block content %}
+    <div x-data="{
+        selectedVariation: null,
+        imageUrl: '',
+        variations: {
+            '1': '/app/img/shop/ladies-1.jpg',  // Image for red variation
+            '2': '/app/img/shop/ladies-2.jpg'  // Image for blue variation
+        },
+        selectVariation(id) {
+            this.selectedVariation = id;
+            this.imageUrl = this.variations[id];
+        }
+    }"
+    class="mt-20">
+        <!-- Display Product Image -->
+        <img :src="imageUrl" alt="Product Image">
+    
+        <!-- Dropdown to select variation (can also be color swatches) -->
+        <select @change="selectVariation($event.target.value)">
+            <option value="1">Red - M</option>
+            <option value="2">Blue - L</option>
+        </select>
+    </div>
+{% endblock %}

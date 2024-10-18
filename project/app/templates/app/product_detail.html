@@ -22,40 +22,38 @@
         </div>
     </section>
     <!-- Detail -->
-    <section class="relative md:py-24 py-16">
+    
+
+    <section class="relative md:py-24 py-16" x-data="productDetail()">
         <div class="container relative px-3 mx-auto">
             <div class="grid md:grid-cols-2 grid-cols-1 gap-6 items-center">
                 <div class="">
-                    <ul class="product-imgs flex list-none">
-                        <li class="w-1/6">
-                            <ul class="img-select list-none">
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                            </ul>
-                        </li>
-                        <li class="img-display shadow dark:shadow-gray-800 m-px w-5/6">
-                            <div class="img-showcase flex w-full duration-500"><img
-                                    src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}" class="min-w-full" alt=""></div>
-                        </li>
-                    </ul>
+                    <div class="product-imgs flex">
+                        <div class="w-1/6">
+                            <div class="">
+                                <div class="p-px">
+                                    {% for variation in product.variations %}
+                                        {% for img in variation.images %}  
+                                        <div @click="changeCurrentImage('{{ img }}')" class="mb-1 last-of-type:mb-0">
+                                            <img src="{{ img }}" class="shadow dark:shadow-gray-800 w-full h-auto" alt="">
+                                        </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="img-display shadow dark:shadow-gray-800 m-px w-5/6">
+                            <div class="img-showcase flex w-full duration-500">
+                                <img :src="currentImage" class="min-w-full" alt="{{ product.name }}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="sticky top-20">
-                    <h5 class="text-2xl font-semibold">Mens Brown Jecket</h5>
-                    <div class="mt-2"><span class="text-slate-400 font-semibold me-1">$16USD <del
-                                class="text-red-600">$21USD</del></span>
+                    <h5 class="text-2xl font-semibold">{{ product.name }}</h5>
+                    <div class="mt-2"><span class="text-slate-400 font-semibold me-1">${{ product.base_price }}USD
+                        <del class="text-red-600">$21USD</del></span>
+                        <!-- Rating -->
                         <ul class="list-none inline-block text-orange-400">
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
@@ -67,59 +65,49 @@
                     </div>
                     <div class="mt-4">
                         <h5 class="text-lg font-semibold">Overview:</h5>
-                        <p class="text-slate-400 mt-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-                            exercitationem, unde molestiae sint quae inventore atque minima natus fugiat nihil quisquam
-                            voluptates ea omnis. Modi laborum soluta tempore unde accusantium.</p>
-                        <ul class="list-none text-slate-400 mt-4">
+                        <p class="text-slate-400 mt-2">{{ product.description }}</p>
+                        <!-- <ul class="list-none text-slate-400 mt-4">
                             <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
                                 Digital Marketing Solutions for Tomorrow</li>
                             <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
                                 Our Talented &amp; Experienced Marketing Agency</li>
                             <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
                                 Create your own skin to match your brand</li>
-                        </ul>
+                        </ul> -->
                     </div>
                     <div class="grid lg:grid-cols-2 grid-cols-1 gap-6 mt-4">
                         <div class="flex items-center">
                             <h5 class="text-lg font-semibold me-2">Size:</h5>
-                            <div class="space-x-1"><a
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white"
-                                    href="">S</a><a
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white"
-                                    href="">M</a><a
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white"
-                                    href="">L</a><a
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white"
-                                    href="">XL</a></div>
+                            <div class="space-x-1">
+                                {% for variation in product.variations %}
+                                    <div class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white" href="">{{ variation.size }}</div>
+                                {% endfor %}
+                                <!-- <a class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white" href="">M</a>
+                                <a class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white" href="">L</a>
+                                <a class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white" href="">XL</a> -->
+                            </div>
                         </div>
                         <div class="flex items-center">
                             <h5 class="text-lg font-semibold me-2">Quantity:</h5>
-                            <div class="qty-icons ms-3 space-x-0.5"><button
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white minus">-</button><input
-                                    min="0" name="quantity" type="number"
-                                    class="h-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white pointer-events-none w-16 ps-4 quantity"
-                                    value="0"><button
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white plus">+</button>
+                            <div class="qty-icons ms-3 space-x-0.5">
+                                <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white minus" @click="quantity -= 1">-</button>
+                                <input min="0" name="quantity" type="number" :value="quantity" class="h-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white pointer-events-none w-16 ps-4" value="quantity">
+                                <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white plus" @click="quantity += 1">+</button>
                             </div>
                         </div>
                         <div class="flex items-center">
                             <h5 class="text-lg font-semibold me-2">Colors:</h5>
-                            <div class="space-x-2"><a
-                                    class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-red-600 inline-flex align-middle"
-                                    title="Red" href=""></a><a
-                                    class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-orange-600 inline-flex align-middle"
-                                    title="Orange" href=""></a><a
-                                    class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-slate-900 inline-flex align-middle"
-                                    title="Black" href=""></a><a
-                                    class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-gray-300 inline-flex align-middle"
-                                    title="Gray" href=""></a></div>
+                            <div class="space-x-2">
+                                {% for variation in product.variations %}
+                                    <div class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-red-600 inline-flex align-middle" title="{{ variation.color }}" @click="changeCurrentImage('{{ variation.images[0] }}')"></div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
-                    <div class="mt-4 space-x-1"><a
-                            class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-orange-500 text-white rounded-md mt-2"
-                            href="">Shop Now</a><a
-                            class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2"
-                            href="">Add to Cart</a></div>
+                    <div class="mt-4 space-x-1">
+                        <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-orange-500 text-white rounded-md mt-2" href="">Shop Now</a>
+                        <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2" href="">Add to Cart</a>
+                    </div>
                 </div>
             </div>
             <div class="grid md:grid-cols-12 grid-cols-1 mt-6 gap-6">
@@ -156,5 +144,22 @@
         </div>
 
     </section>
+
+
+<script>
+    const product = {{ product | tojson | safe }}
+    console.log(product)
+    function productDetail() {
+        return {
+            product: product,
+            currentImage: product.variations[0].images[0],  // Default big image
+            quantity: 1,
+
+            changeCurrentImage(img) {
+                this.currentImage = img
+            }
+        }
+    }
+</script>
 </section>
 {% endblock %}
