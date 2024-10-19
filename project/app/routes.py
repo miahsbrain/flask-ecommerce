@@ -165,6 +165,7 @@ def shop():
             primary_image = primary_variation.images[0].image_url if primary_variation.images else '/static/default_image.jpg'
 
             product_data.append({
+                'id': product.id,
                 'name': product.name,
                 'description': product.description,
                 'price': primary_variation.price,

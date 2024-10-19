@@ -16,6 +16,7 @@ class User(BaseModel, UserMixin):
     is_admin = Column(Boolean, default=False)
     profile_picture = relationship("ProfilePicture", backref=backref('user', uselist = False), cascade='all, delete-orphan')
     products = relationship('Product', backref='user', lazy=True)
+    cart_items = relationship('CartItem', backref='user', lazy=True)
     # orders = relationship('Order', backref='user', lazy=True)
 
     def __repr__(self) -> str:
