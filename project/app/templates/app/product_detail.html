@@ -111,7 +111,7 @@
                     </div>
                     <div class="mt-4 space-x-1">
                         <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-orange-500 text-white rounded-md mt-2" href="">Shop Now</a>
-                        <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2" href="">Add to Cart</a>
+                        <div class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2 cursor-pointer" @click="addToCart()">Add to Cart</div>
                     </div>
                 </div>
             </div>
@@ -218,6 +218,29 @@
                 if (variation) {
                     this.currentImage = variation.images[0];
                     this.price = variation.price
+                }
+            },
+
+            async addToCart() {
+                const variation = this.product.variations.find(v => v.color === this.selectedColor && v.size === this.selectedSize);
+                const formData = new FormData();
+                formData.append('variation_id', variation.id);
+                formData.append('quantity', this.selectedQuantity);
+                formData.append('csrf_token', '{{ csrf_token() }}');
+
+                if (variation) {
+                    try {
+                        await fetch('/add_to_cart', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
+                    } catch (error) {
+                        console.error('Error adding to cart:', error);
+                    }
                 }
             }
 

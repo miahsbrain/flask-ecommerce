@@ -14,9 +14,9 @@ class User(BaseModel, UserMixin):
     email = Column(String(100), nullable=False, unique=True)
     password = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
-    profile_picture = relationship("ProfilePicture", backref=backref('user', uselist = False), cascade='all, delete-orphan')
+    profile_picture = relationship("ProfilePicture", uselist=False, backref=backref('user'), cascade='all, delete-orphan')
     products = relationship('Product', backref='user', lazy=True)
-    cart_items = relationship('CartItem', backref='user', lazy=True)
+    cart = relationship('Cart', backref='user', uselist=False, lazy=True)
     # orders = relationship('Order', backref='user', lazy=True)
 
     def __repr__(self) -> str:

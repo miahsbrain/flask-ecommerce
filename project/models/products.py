@@ -49,18 +49,42 @@ class ProductVariationImage(db.Model):
     def __repr__(self):
         return f'<ProductVariationImage {self.image_url}>'
 
+class Cart(db.Model):
+    __tablename__ = 'carts'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.uid', name='fk_cart_items_user'), nullable=False)
+    items = relationship('CartItem', backref='variation', lazy=True, cascade='all, delete-orphan')
+
+    @classmethod
+    def get_or_create(cls, user):
+        """Get existing cart or create new one for user"""
+        if user.cart is None:
+            cart = cls(user_id=user.uid)
+            db.session.add(cart)
+            db.session.commit()
+        return user.cart
+
+    def __repr__(self):
+        return f"<Cart {self.id} - items: {self.items}>"
+
+
 # Shopping Cart model to store user's cart items before checkout
 class CartItem(db.Model):
     __tablename__ = 'cart_items'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.uid', name='fk_cart_items_user'), nullable=False)
-    product_id = Column(Integer, ForeignKey('products.id', name='fk_cart_items_product'), nullable=False)
+    # product_id = Column(Integer, ForeignKey('products.id', name='fk_cart_items_product'), nullable=False)
+    cart_id = Column(Integer, ForeignKey('carts.id', name='fk_cart_items_cart'), nullable=False)
     quantity = Column(Integer, default=1)
     variation_id = Column(Integer, ForeignKey('product_variations.id', name='fk_cart_items_variation'), nullable=False)  # Store selected variation
+    # product = relationship('Product')
+    product_variation = relationship('ProductVariation', uselist=False)
 
     def __repr__(self):
         return f"<CartItem {self.product_id} - Quantity: {self.quantity}>"
+    
+
 
 
 # # Rating model for product reviews

@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from project.utils.auth import authenticate, create_user, validate_email, update_password
 from project.extensions.dependencies import db
 from project.models.users import User, ProfilePicture
-from project.models.products import Product, ProductVariation, ProductVariationImage
+from project.models.products import Product, ProductVariation, ProductVariationImage, Cart, CartItem
 
 app = Blueprint('app', __name__, template_folder='templates', static_folder='static', static_url_path='/')
 
@@ -176,6 +176,25 @@ def shop():
 
 @app.route('/cart')
 def cart():
+    cart = Cart.get_or_create(current_user)
+    
+    items = [{
+        'id': item.id,
+        'product_id': item.product_variation.product.id,
+        'name': item.product_variation.product.name,
+        'price': float(item.product_variation.price),
+        'size': item.product_variation.size,
+        'color': item.product_variation.color,
+        'quantity': item.quantity,
+        'total': float(item.product_variation.product.price * item.quantity)
+    } for item in cart.items]
+
+    print(items)
+    
+    # return jsonify({
+    #     'items': items,
+    #     'total': sum(item['total'] for item in items)
+    # })
     return render_template('app/cart.html')
 
 @app.route('/checkout')
@@ -200,11 +219,58 @@ def product_details(product_id):
         })
 
     product_data = {
+        'id': product_id,
         'name': product.name,
         'description': product.description,
         'base_price': product.price,
         'variations': variations
     }
-    # print(product_data)
 
     return render_template('app/product_detail.html', product=product_data)
+
+@app.route('/add_to_cart', methods=['POST'])
+@login_required
+def add_to_cart():
+    if request.method == 'POST':
+        data = request.form
+
+        cart = Cart.get_or_create(current_user)
+
+        # Check if item already exists in cart
+        cart_item = CartItem.query.filter_by(
+            cart_id=cart.id,
+            variation_id=data['variation_id']
+        ).first()
+        
+        if cart_item:
+            cart_item.quantity += int(data['quantity'])
+        else:
+            cart_item = CartItem(
+                variation_id=data['variation_id'],
+                quantity=data['quantity'],
+                cart_id = cart.id
+            )
+            db.session.add(cart_item)
+        db.session.commit()
+    return jsonify({'message': 'success'})
+
+@app.route('/update_cart', methods=['POST'])
+@login_required
+def update_cart():
+    data = request.form
+    item_id = data['item_id']
+    quantity = data['quantity']
+    
+    cart_item = CartItem.query.get_or_404(item_id)
+    
+    # Ensure user owns this cart item
+    if cart_item.cart.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    if quantity > 0:
+        cart_item.quantity = quantity
+    else:
+        db.session.delete(cart_item)
+    
+    db.session.commit()
+    return jsonify({'status': 'success'})
