@@ -28,7 +28,7 @@ class ProductVariation(BaseModel):
     color = Column(String(50), nullable=False)  # Color variation
     size = Column(String(50), nullable=True)  # Size variation, optional
     price = Column(Float, nullable=False)  # Price specific to this variation
-    stock = Column(Integer, nullable=False)  # Stock for this variation
+    stock = Column(Integer, nullable=False, default=1)  # Stock for this variation
 
     product_id = Column(Integer, ForeignKey('products.id', name='fk_product_variations_product'), nullable=False)
 
@@ -54,7 +54,7 @@ class Cart(db.Model):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.uid', name='fk_cart_items_user'), nullable=False)
-    items = relationship('CartItem', backref='variation', lazy=True, cascade='all, delete-orphan')
+    items = relationship('CartItem', backref='cart', lazy=True, cascade='all, delete-orphan')
 
     @classmethod
     def get_or_create(cls, user):
@@ -85,47 +85,60 @@ class CartItem(db.Model):
         return f"<CartItem {self.product_id} - Quantity: {self.quantity}>"
     
 
-# # Order model to store information about the order
-# class Order(BaseModel):
-#     id = Column(Integer, primary_key=True)
-#     user_id = Column(Integer, ForeignKey('user.uid'), nullable=False)
-#     total_price = Column(Float, nullable=False)
-#     status = Column(String(50), default="Pending")  # Pending, Shipped, Delivered
+# Order model to store information about the order
+class Order(BaseModel):
+    __tablename__ = 'orders'
 
-#     # One order can have multiple items
-#     items = relationship('OrderItem', backref='order', lazy=True)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.uid'), nullable=False)
+    total_price = Column(Float, nullable=False, default=0)
+    status = Column(String(50), default="Pending")  # Pending, Confirmed, Shipped, Delivered
 
-#     # Shipping address for the order
-#     shipping_address_id = Column(Integer, ForeignKey('shipping_address.id'), nullable=False)
+    # One order can have multiple items
+    items = relationship('OrderItem', backref='order', lazy=True)
 
-#     def __repr__(self):
-#         return f"<Order {self.id} - Status: {self.status}>"
+    # Shipping address for the order
+    shipping_address_id = Column(Integer, ForeignKey('shipping_addresses.id'), nullable=False)
+    shipping_address = relationship('ShippingAddress', uselist=False, lazy=True)
 
-# # Items within an order
-# class OrderItem(db.Model):
-#     id = Column(Integer, primary_key=True)
-#     order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
-#     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
-#     quantity = Column(Integer, nullable=False)
-#     variation_id = Column(Integer, ForeignKey('product_variation.id'), nullable=True)
-#     price_at_purchase = Column(Float, nullable=False)  # Store the price at the time of purchase
+    def __repr__(self):
+        return f"<Order {self.id} - Status: {self.status}>"
 
-#     def __repr__(self):
-#         return f"<OrderItem {self.product_id} - Quantity: {self.quantity}>"
+# Items within an order
+class OrderItem(db.Model):
+    __tablename__ = 'order_items'
 
-# # Shipping address model
-# class ShippingAddress(db.Model):
-#     id = Column(Integer, primary_key=True)
-#     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-#     address_line_1 = Column(String(255), nullable=False)
-#     address_line_2 = Column(String(255), nullable=True)
-#     city = Column(String(100), nullable=False)
-#     state = Column(String(100), nullable=False)
-#     zip_code = Column(String(20), nullable=False)
-#     country = Column(String(100), nullable=False)
+    id = Column(Integer, primary_key=True)
+    order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
+    product_id = Column(Integer, ForeignKey('products.id'), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    variation_id = Column(Integer, ForeignKey('product_variations.id'), nullable=True)
+    price_at_purchase = Column(Float, nullable=False)  # Store the price at the time of purchase
+    product = relationship('Product', uselist=False)
+    product_variation = relationship('ProductVariation', uselist=False)
 
-#     def __repr__(self):
-#         return f"<ShippingAddress {self.address_line_1}, {self.city}>"
+    def __repr__(self):
+        return f"<OrderItem {self.product_id} - Quantity: {self.quantity}>"
+
+# Shipping address model
+class ShippingAddress(db.Model):
+    __tablename__ = 'shipping_addresses'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.uid'), nullable=False)
+    first_name = Column(String(255), nullable=False)
+    last_name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False)
+    phone = Column(String(255), nullable=False)
+    address_line_1 = Column(String(255), nullable=False)
+    address_line_2 = Column(String(255), nullable=True)
+    city = Column(String(100), nullable=False)
+    state = Column(String(100), nullable=False)
+    zip_code = Column(String(20), nullable=False)
+    country = Column(String(100), nullable=False)
+
+    def __repr__(self):
+        return f"<ShippingAddress {self.address_line_1}, {self.city}>"
 
 
 # # Rating model for product reviews

@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from project.utils.auth import authenticate, create_user, validate_email, update_password
 from project.extensions.dependencies import db
 from project.models.users import User, ProfilePicture
-from project.models.products import Product, ProductVariation, ProductVariationImage, Cart, CartItem
+from project.models.products import Product, ProductVariation, ProductVariationImage, Cart, CartItem, Order, OrderItem, ShippingAddress
 
 app = Blueprint('app', __name__, template_folder='templates', static_folder='static', static_url_path='/')
 
@@ -211,12 +211,12 @@ def cart():
         'product_id': item.product_variation.product.id,
         'variation_id': item.variation_id,
         'name': item.product_variation.product.name,
-        'price': float(item.product_variation.price),
+        'price': round(float(item.product_variation.price), 2),
         'size': item.product_variation.size,
         'color': item.product_variation.color,
         'quantity': item.quantity,
         'image': item.product_variation.images[0].image_url,
-        'total': float(item.product_variation.product.price * item.quantity)
+        'total': round(float(item.product_variation.product.price * item.quantity), 2)
     } for item in cart.items]
     
     return render_template('app/cart.html', cart=items)
@@ -235,7 +235,7 @@ def validate_cart():
         'color': item.product_variation.color,
         'quantity': item.quantity,
         'image': item.product_variation.images[0].image_url,
-        'total': float(item.product_variation.product.price * item.quantity)
+        'total': round(float(item.product_variation.product.price * item.quantity), 2)
     } for item in cart.items]
     
     return jsonify({'cart': items})
@@ -297,14 +297,52 @@ def update_cart():
         'color': item.product_variation.color,
         'quantity': item.quantity,
         'image': item.product_variation.images[0].image_url,
-        'total': float(item.product_variation.product.price * item.quantity)
+        'total': round(float(item.product_variation.product.price * item.quantity), 2)
     } for item in cart.items]
     
     return jsonify({'cart': items})
 
-@app.route('/checkout')
+@app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
-    return render_template('app/checkout.html')
+    cart = Cart.get_or_create(current_user)
+    items = [{
+        'id': item.id,
+        'product_id': item.product_variation.product.id,
+        'name': item.product_variation.product.name,
+        'price': round(float(item.product_variation.price), 2),
+        'size': item.product_variation.size,
+        'color': item.product_variation.color,
+        'quantity': item.quantity,
+        'image': item.product_variation.images[0].image_url,
+        'total': round(float(item.product_variation.product.price * item.quantity), 2)
+    } for item in cart.items]
+
+    if request.method == 'GET':
+        return render_template('app/checkout.html', checkout_items=items)
+    elif request.method == 'POST':
+        data = request.form
+        print(data)
+        shipping_address = ShippingAddress(user=current_user,
+                                           first_name=data['firstname'],
+                                           last_name=data['lastname'],
+                                           email=data['email'],
+                                           phone=data['phone'],
+                                           address_line_1=data['address'],
+                                           address_line_2=data['address2'],
+                                           city=data['city'],
+                                           state=data['state'],
+                                           zip_code=data['zipcode'],
+                                           country=data['country']
+                                           )
+        order = Order(user=current_user, )
+        print(shipping_address)
+        
+
+        return render_template('app/checkout.html', checkout_items=items)
+
+@app.route('/orders')
+def complete_checkout():
+    return jsonify({'order': 'success'})
 
 
 
