@@ -74,43 +74,26 @@ class CartItem(db.Model):
     __tablename__ = 'cart_items'
 
     id = Column(Integer, primary_key=True)
-    # product_id = Column(Integer, ForeignKey('products.id', name='fk_cart_items_product'), nullable=False)
+    product_id = Column(Integer, ForeignKey('products.id', name='fk_cart_items_product'), nullable=False)
     cart_id = Column(Integer, ForeignKey('carts.id', name='fk_cart_items_cart'), nullable=False)
     quantity = Column(Integer, default=1)
     variation_id = Column(Integer, ForeignKey('product_variations.id', name='fk_cart_items_variation'), nullable=False)  # Store selected variation
-    # product = relationship('Product')
+    product = relationship('Product', uselist=False)
     product_variation = relationship('ProductVariation', uselist=False)
 
     def __repr__(self):
         return f"<CartItem {self.product_id} - Quantity: {self.quantity}>"
     
 
-
-
-# # Rating model for product reviews
-# class Rating(db.Model):
-#     id = Column(Integer, primary_key=True)
-#     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
-#     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-#     rating = Column(Integer, nullable=False)  # Rating from 1-5
-#     review = Column(Text, nullable=True)
-#     created_at = Column(DateTime, default=datetime.now(tz=timezone.utc))
-
-#     def __repr__(self):
-#         return f"<Rating {self.rating} for Product {self.product_id}>"
-
-
 # # Order model to store information about the order
-# class Order(db.Model):
+# class Order(BaseModel):
 #     id = Column(Integer, primary_key=True)
-#     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+#     user_id = Column(Integer, ForeignKey('user.uid'), nullable=False)
 #     total_price = Column(Float, nullable=False)
 #     status = Column(String(50), default="Pending")  # Pending, Shipped, Delivered
-#     created_at = Column(DateTime, default=datetime.now(tz=timezone.utc))
-#     updated_at = Column(DateTime, default=datetime.now(tz=timezone.utc), onupdate=datetime.now(tz=timezone.utc))
 
 #     # One order can have multiple items
-#     order_items = relationship('OrderItem', backref='order', lazy=True)
+#     items = relationship('OrderItem', backref='order', lazy=True)
 
 #     # Shipping address for the order
 #     shipping_address_id = Column(Integer, ForeignKey('shipping_address.id'), nullable=False)
@@ -143,3 +126,18 @@ class CartItem(db.Model):
 
 #     def __repr__(self):
 #         return f"<ShippingAddress {self.address_line_1}, {self.city}>"
+
+
+# # Rating model for product reviews
+# class Rating(db.Model):
+#     id = Column(Integer, primary_key=True)
+#     product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+#     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+#     rating = Column(Integer, nullable=False)  # Rating from 1-5
+#     review = Column(Text, nullable=True)
+#     created_at = Column(DateTime, default=datetime.now(tz=timezone.utc))
+
+#     def __repr__(self):
+#         return f"<Rating {self.rating} for Product {self.product_id}>"
+
+

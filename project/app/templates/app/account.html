@@ -208,7 +208,7 @@
 
                 // Send the file to the backend via an AJAX request
                 fetch('/update_profile_image', {
-                    method: 'POST',
+                    method: 'PUT',
                     body: formData
                 })
                 .then(response => response.json())
