@@ -22,40 +22,38 @@
         </div>
     </section>
     <!-- Detail -->
-    <section class="relative md:py-24 py-16">
+    
+
+    <section class="relative md:py-24 py-16" x-data="productDetail()" x-init="init()">
         <div class="container relative px-3 mx-auto">
             <div class="grid md:grid-cols-2 grid-cols-1 gap-6 items-center">
                 <div class="">
-                    <ul class="product-imgs flex list-none">
-                        <li class="w-1/6">
-                            <ul class="img-select list-none">
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                                <li class="p-px"><a href="/product-detail-two"><img
-                                            src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}"
-                                            class="shadow dark:shadow-gray-800 w-full h-auto" alt=""></a></li>
-                            </ul>
-                        </li>
-                        <li class="img-display shadow dark:shadow-gray-800 m-px w-5/6">
-                            <div class="img-showcase flex w-full duration-500"><img
-                                    src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}" class="min-w-full" alt=""></div>
-                        </li>
-                    </ul>
+                    <div class="product-imgs flex">
+                        <div class="w-1/6">
+                            <div class="">
+                                <div class="p-px">
+                                    {% for variation in product.variations %}
+                                        {% for img in variation.images %}  
+                                        <div @click="changeCurrentImage('{{ img }}')" class="mb-1 last-of-type:mb-0">
+                                            <img src="{{ img }}" class="shadow dark:shadow-gray-800 w-full h-auto" alt="">
+                                        </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="img-display shadow dark:shadow-gray-800 m-px w-5/6">
+                            <div class="img-showcase flex w-full duration-500">
+                                <img :src="currentImage" class="min-w-full" alt="{{ product.name }}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="sticky top-20">
-                    <h5 class="text-2xl font-semibold">Mens Brown Jecket</h5>
-                    <div class="mt-2"><span class="text-slate-400 font-semibold me-1">$16USD <del
-                                class="text-red-600">$21USD</del></span>
+                    <h5 class="text-2xl font-semibold">{{ product.name }}</h5>
+                    <div class="mt-2"><span class="text-slate-400 font-semibold me-1" x-text="'$ '+price+' USD'">
+                        <del class="text-red-600">$21USD</del></span>
+                        <!-- Rating -->
                         <ul class="list-none inline-block text-orange-400">
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
@@ -67,59 +65,54 @@
                     </div>
                     <div class="mt-4">
                         <h5 class="text-lg font-semibold">Overview:</h5>
-                        <p class="text-slate-400 mt-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-                            exercitationem, unde molestiae sint quae inventore atque minima natus fugiat nihil quisquam
-                            voluptates ea omnis. Modi laborum soluta tempore unde accusantium.</p>
-                        <ul class="list-none text-slate-400 mt-4">
+                        <p class="text-slate-400 mt-2">{{ product.description }}</p>
+                        <!-- <ul class="list-none text-slate-400 mt-4">
                             <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
                                 Digital Marketing Solutions for Tomorrow</li>
                             <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
                                 Our Talented &amp; Experienced Marketing Agency</li>
                             <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
                                 Create your own skin to match your brand</li>
-                        </ul>
+                        </ul> -->
                     </div>
                     <div class="grid lg:grid-cols-2 grid-cols-1 gap-6 mt-4">
                         <div class="flex items-center">
                             <h5 class="text-lg font-semibold me-2">Size:</h5>
-                            <div class="space-x-1"><a
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white"
-                                    href="">S</a><a
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white"
-                                    href="">M</a><a
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white"
-                                    href="">L</a><a
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white"
-                                    href="">XL</a></div>
+                            <div class="space-x-1">
+                                <!-- Color Filter with Radio Buttons -->
+                                <template x-for="size in uniqueSizes" :key="size">
+                                    <label class="radio-label">
+                                        <input type="radio" name="size" :value="size" @change="filterColors(size)" :checked="size === selectedSize" class="hidden peer">
+                                        <div class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white peer-checked:bg-green-500" x-text="size"></div>
+                                    </label>
+                                </template>
+                            </div>
                         </div>
                         <div class="flex items-center">
                             <h5 class="text-lg font-semibold me-2">Quantity:</h5>
-                            <div class="qty-icons ms-3 space-x-0.5"><button
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white minus">-</button><input
-                                    min="0" name="quantity" type="number"
-                                    class="h-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white pointer-events-none w-16 ps-4 quantity"
-                                    value="0"><button
-                                    class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white plus">+</button>
+                            <div class="ms-3 space-x-0.5">
+                                <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white minus" @click="updateQuantity('neg')">-</button>
+                                <input min="0" name="quantity" type="number" :value="selectedQuantity" class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white pointer-events-none w-16 ps-4">
+                                <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white plus" @click="updateQuantity('pos')">+</button>
                             </div>
                         </div>
                         <div class="flex items-center">
                             <h5 class="text-lg font-semibold me-2">Colors:</h5>
-                            <div class="space-x-2"><a
-                                    class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-red-600 inline-flex align-middle"
-                                    title="Red" href=""></a><a
-                                    class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-orange-600 inline-flex align-middle"
-                                    title="Orange" href=""></a><a
-                                    class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-slate-900 inline-flex align-middle"
-                                    title="Black" href=""></a><a
-                                    class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-gray-300 inline-flex align-middle"
-                                    title="Gray" href=""></a></div>
+                            <div class="space-x-2">
+                                <!-- Color Filter with Radio Buttons (Not Filtered) -->
+                                <template x-for="color in uniqueColors" :key="color">
+                                    <label class="radio-label">
+                                        <input type="radio" name="color" :value="color" @change="filterSizes(color)" :checked="color === selectedColor" class="hidden peer">
+                                        <div class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-red-600 inline-flex align-middle peer-checked:bg-green-500" x-text="color"></div>
+                                    </label>
+                                </template>
+                            </div>
                         </div>
                     </div>
-                    <div class="mt-4 space-x-1"><a
-                            class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-orange-500 text-white rounded-md mt-2"
-                            href="">Shop Now</a><a
-                            class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2"
-                            href="">Add to Cart</a></div>
+                    <div class="mt-4 space-x-1">
+                        <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-orange-500 text-white rounded-md mt-2" href="">Shop Now</a>
+                        <div class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2 cursor-pointer" @click="addToCart()">Add to Cart</div>
+                    </div>
                 </div>
             </div>
             <div class="grid md:grid-cols-12 grid-cols-1 mt-6 gap-6">
@@ -142,12 +135,8 @@
                 <div class="lg:col-span-9 md:col-span-7">
                     <div id="myTabContent" class="p-6 bg-white dark:bg-slate-900 shadow dark:shadow-gray-800 rounded-md">
                         <div>
-                            <p class="text-slate-400">Due to its widespread use as filler text for layouts, non-readability is
-                                of great importance: human perception is tuned to recognize certain patterns and repetitions in
-                                texts. If the distribution of letters and 'words' is random, the reader will not be distracted
-                                from making a neutral judgement on the visual impact and readability of the typefaces
-                                (typography), or the distribution of text on the page (layout or type area). For this reason,
-                                dummy text usually consists of a more or less random series of words or syllables.</p>
+                            <p class="text-slate-400">Due to its widespread use as filler text for layouts, non-readability is of great importance: human perception is tuned to recognize certain patterns and repetitions in texts. If the distribution of letters and 'words' is random, the reader will not be distracted from making a (typography), or the distribution of text on the page (layout or type area). For this reason, dummy text usually consists of a more or less random series of words or syllables.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -156,5 +145,109 @@
         </div>
 
     </section>
+
+
+
+<script>
+    // const product = JSON.parse('{{ product | tojson | safe }}');
+    // console.log(product);
+    function productDetail() {
+        return {
+            product: JSON.parse('{{ product | tojson | safe }}'),
+            
+            init() {
+                this.currentImage = this.product.variations[0].images[0];  // Default big image
+                this.selectedQuantity = parseInt(1);
+
+                this.selectedColor = this.product.variations[0].color;   // Default selected color
+                this.selectedSize = this.product.variations[0].size; // Default selected size
+                this.uniqueColors = [];    // Colors available (no filtering)
+                this.uniqueSizes = [];     // Sizes filtered by selected color
+                this.price = this.product.variations[0].price;
+
+                this.uniqueColors = this.getUniqueColors();
+                this.filterSizes(this.selectedColor); // Filter sizes based on the default color
+            },
+
+            changeCurrentImage(img) {
+                this.currentImage = img
+            },
+
+            updateQuantity(arg) {
+                if (arg == 'neg') {
+                    this.selectedQuantity = parseInt(Math.max(1, this.selectedQuantity - 1))
+                }
+                if (arg == 'pos') {
+                    this.selectedQuantity = parseInt(Math.min(10, this.selectedQuantity + 1))
+                }
+            },
+
+            // Get all unique colors (No filtering required here)
+            getUniqueColors() {
+                return [...new Set(this.product.variations.map(v => v.color))];
+            },
+
+            // Get all unique sizes available for the current selected color
+            getUniqueSizes() {
+                const filtered = this.selectedColor
+                    ? this.product.variations.filter(v => v.color === this.selectedColor)
+                    : this.product.variations;
+                return [...new Set(filtered.map(v => v.size))];
+            },
+
+            // Filter sizes when a color is selected
+            filterSizes(color) {
+                this.selectedColor = color;
+                this.uniqueSizes = this.getUniqueSizes();
+
+                // Reset size if it's not in the new filtered list
+                if (!this.uniqueSizes.includes(this.selectedSize)) {
+                    this.selectedSize = this.uniqueSizes[0]; // Set the first available size if current one is not valid
+                }
+                
+                this.updateImage();
+            },
+            
+            // Filter colors when a size is selected (No actual filtering, but just handling change)
+            filterColors(size) {
+                this.selectedSize = size;
+            },
+
+            // Update the image based on the selected color and size
+            updateImage() {
+                const variation = this.product.variations.find(v => v.color === this.selectedColor && v.size === this.selectedSize);
+                if (variation) {
+                    this.currentImage = variation.images[0];
+                    this.price = variation.price
+                }
+            },
+
+            async addToCart() {
+                const variation = this.product.variations.find(v => v.color === this.selectedColor && v.size === this.selectedSize);
+                const formData = new FormData();
+                formData.append('product_id', this.product.id);
+                formData.append('variation_id', variation.variation_id);
+                formData.append('quantity', this.selectedQuantity);
+                formData.append('csrf_token', '{{ csrf_token() }}');
+
+                if (variation) {
+                    try {
+                        await fetch('/add_to_cart', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
+                    } catch (error) {
+                        console.error('Error adding to cart:', error);
+                    }
+                }
+            }
+
+        };
+    }
+</script>
 </section>
 {% endblock %}

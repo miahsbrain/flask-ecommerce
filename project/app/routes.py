@@ -5,6 +5,8 @@ from werkzeug.utils import secure_filename
 from project.utils.auth import authenticate, create_user, validate_email, update_password
 from project.extensions.dependencies import db
 from project.models.users import User, ProfilePicture
+from project.models.products import Product, ProductVariation, ProductVariationImage, Cart, CartItem, Order, OrderItem, ShippingAddress
+from functools import reduce
 
 app = Blueprint('app', __name__, template_folder='templates', static_folder='static', static_url_path='/')
 
@@ -78,7 +80,8 @@ def settings():
                 file.save(file_path)
 
                 # Clear all previous profile pictures and save new one
-                current_user.profile_picture.clear()
+                if current_user.profile_picture:
+                    current_user.profile_picture.clear()
                 pfp = ProfilePicture(url=relative_url, user=current_user)
                 db.session.add(pfp)
                 db.session.commit()
@@ -107,9 +110,9 @@ def settings():
 
     return render_template('app/settings.html')
 
-@app.route('/update_profile_image', methods=['POST'])
+@app.route('/update_profile_image', methods=['PUT'])
 def update_profile_image():
-    if request.method == 'POST':
+    if request.method == 'PUT':
         data = request.form
         if data.get('action') == 'picture-form':
             file = request.files.get('profile-picture')
@@ -123,7 +126,8 @@ def update_profile_image():
                 file.save(file_path)
 
                 # Clear all previous profile pictures and save new one
-                current_user.profile_picture.clear()
+                if current_user.profile_picture:
+                    current_user.profile_picture.clear()
                 pfp = ProfilePicture(url=relative_url, user=current_user)
                 db.session.add(pfp)
                 db.session.commit()
@@ -153,16 +157,234 @@ def social():
 
 @app.route('/shop')
 def shop():
-    return render_template('app/shop.html')
+    products = Product.query.all()  # Get all products
+
+    # For each product, choose a default or first variation to display
+    product_data = []
+    for product in products:
+        if product.variations:  # Ensure the product has variations
+            primary_variation = product.variations[0]  # Default to the first variation
+            primary_image = primary_variation.images[0].image_url if primary_variation.images else '/static/default_image.jpg'
+
+            product_data.append({
+                'id': product.id,
+                'name': product.name,
+                'description': product.description,
+                'price': primary_variation.price,
+                'variation': f'{primary_variation.color} {primary_variation.size}',
+                'image_url': primary_image
+            })
+    return render_template('app/shop.html', products=product_data)
+
+@app.route('/product_detail/<int:product_id>')
+def product_details(product_id):
+    # Fetch the product by ID
+    product = Product.query.get_or_404(product_id)
+
+    # Prepare data for product variations and images
+    variations = []
+    for variation in product.variations:
+        images = [image.image_url for image in variation.images]
+        variations.append({
+            'variation_id': variation.id,
+            'color': variation.color,
+            'size': variation.size,
+            'price': variation.price,
+            'images': images,
+        })
+
+    product_data = {
+        'id': product_id,
+        'name': product.name,
+        'description': product.description,
+        'base_price': product.price,
+        'variations': variations
+    }
+
+    return render_template('app/product_detail.html', product=product_data)
 
 @app.route('/cart')
 def cart():
-    return render_template('app/cart.html')
+    cart = Cart.get_or_create(current_user)
+    
+    items = [{
+        'id': item.id,
+        'product_id': item.product_variation.product.id,
+        'variation_id': item.variation_id,
+        'name': item.product_variation.product.name,
+        'price': round(float(item.product_variation.price), 2),
+        'size': item.product_variation.size,
+        'color': item.product_variation.color,
+        'quantity': item.quantity,
+        'image': item.product_variation.images[0].image_url,
+        'total': round(float(item.product_variation.price * item.quantity), 2)
+    } for item in cart.items]
+    
+    return render_template('app/cart.html', cart=items)
 
-@app.route('/checkout')
+@app.route('/validate_cart', methods=['GET', 'POST'])
+def validate_cart():
+    cart = Cart.get_or_create(current_user)
+    
+    items = [{
+        'id': item.id,
+        'product_id': item.product_variation.product.id,
+        'variation_id': item.variation_id,
+        'name': item.product_variation.product.name,
+        'price': float(item.product_variation.price),
+        'size': item.product_variation.size,
+        'color': item.product_variation.color,
+        'quantity': item.quantity,
+        'image': item.product_variation.images[0].image_url,
+        'total': round(float(item.product_variation.product.price * item.quantity), 2)
+    } for item in cart.items]
+    
+    return jsonify({'cart': items})
+
+@app.route('/add_to_cart', methods=['POST'])
+@login_required
+def add_to_cart():
+    if request.method == 'POST':
+        data = request.form
+
+        cart = Cart.get_or_create(current_user)
+
+        # Check if item already exists in cart
+        cart_item = CartItem.query.filter_by(
+            cart_id=cart.id,
+            variation_id=data['variation_id'],
+            product_id=data['product_id']
+        ).first()
+        
+        if cart_item:
+            cart_item.quantity += int(data['quantity'])
+        else:
+            cart_item = CartItem(
+                product_id=data['product_id'],
+                variation_id=data['variation_id'],
+                quantity=data['quantity'],
+                cart_id = cart.id
+            )
+            db.session.add(cart_item)
+        db.session.commit()
+    return jsonify({'message': 'success'})
+
+@app.route('/update_cart', methods=['GET', 'PUT'])
+def update_cart():
+    data = request.form
+    cart = Cart.get_or_create(current_user)
+
+    if request.method == 'PUT':
+        cart_item = CartItem.query.filter_by(
+                cart_id=cart.id,
+                product_id=data['product_id'],
+                variation_id=data['variation_id']
+            ).first()
+
+        if cart_item:
+            cart_item.quantity = int(data['quantity'])
+
+            if cart_item.quantity <= 0:
+                db.session.delete(cart_item)
+
+        db.session.commit()
+
+    items = [{
+        'id': item.id,
+        'product_id': item.product_variation.product.id,
+        'name': item.product_variation.product.name,
+        'price': float(item.product_variation.price),
+        'size': item.product_variation.size,
+        'color': item.product_variation.color,
+        'quantity': item.quantity,
+        'image': item.product_variation.images[0].image_url,
+        'total': round(float(item.product_variation.product.price * item.quantity), 2)
+    } for item in cart.items]
+    
+    return jsonify({'cart': items})
+
+@app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
-    return render_template('app/checkout.html')
+    cart = Cart.get_or_create(current_user)
+    items = [{
+        'id': item.id,
+        'product_id': item.product_variation.product.id,
+        'name': item.product_variation.product.name,
+        'price': round(float(item.product_variation.price), 2),
+        'size': item.product_variation.size,
+        'color': item.product_variation.color,
+        'quantity': item.quantity,
+        'image': item.product_variation.images[0].image_url,
+        'total': round(float(item.product_variation.product.price * item.quantity), 2)
+    } for item in cart.items]
 
-@app.route('/product_detail')
-def product_detail():
-    return render_template('app/product_detail.html')
+    if request.method == 'GET':
+        return render_template('app/checkout.html', checkout_items=items)
+    elif request.method == 'POST':
+        data = request.form
+
+        # SUCCESSFULLY CREATED NEW SHIPPING ADDRESS AND ORDER
+        print(data)
+        shipping_address = ShippingAddress(user=current_user,
+                                           first_name=data['firstname'],
+                                           last_name=data['lastname'],
+                                           email=data['email'],
+                                           phone=data['phone'],
+                                           address_line_1=data['address'],
+                                           address_line_2=data['address2'],
+                                           city=data['city'],
+                                           state=data['state'],
+                                           zip_code=data['zipcode'],
+                                           country=data['country']
+                                           )
+        total_price = round(reduce(lambda total, item: total+item, [(item.quantity * item.product_variation.price) for item in cart.items]), 2)
+        order = Order(user=current_user, shipping_address=shipping_address, total_price=total_price)
+
+        db.session.add(shipping_address)
+        db.session.add(order)
+
+        print(shipping_address)
+        print(order)
+
+        for item in list(cart.items):
+            order_item = OrderItem(order=order,
+                                   product_id=item.product_id,
+                                   variation_id=item.variation_id,
+                                   quantity=item.quantity,
+                                   price_at_purchase=item.product_variation.price,
+                                   total_price=round(float(item.product_variation.product.price * item.quantity), 2)
+                                   )
+            db.session.add(order_item)
+        
+        print(order.items)
+        print(order.total_price)
+        
+        return render_template('app/checkout.html', checkout_items=items)
+
+@app.route('/orders')
+def complete_checkout():
+    return jsonify({'order': 'success'})
+
+
+
+
+# @app.route('/update_cart', methods=['POST'])
+# @login_required
+# def update_cart():
+#     data = request.form
+#     item_id = data['item_id']
+#     quantity = data['quantity']
+    
+#     cart_item = CartItem.query.get_or_404(item_id)
+    
+#     # Ensure user owns this cart item
+#     if cart_item.cart.user_id != current_user.id:
+#         return jsonify({'error': 'Unauthorized'}), 403
+    
+#     if quantity > 0:
+#         cart_item.quantity = quantity
+#     else:
+#         db.session.delete(cart_item)
+    
+#     db.session.commit()
+#     return jsonify({'status': 'success'})

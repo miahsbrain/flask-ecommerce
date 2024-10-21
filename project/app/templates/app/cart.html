@@ -15,13 +15,13 @@
                     <div
                         class="inline-block text-base text-slate-950 dark:text-white mx-0.5 ltr:rotate-0 rtl:rotate-180">
                         &rarr;</div>
-                    <div class="inline-block uppercase text-[13px] font-bold text-orange-500" aria-current="page">Shop Cart</div>
+                    <div class="inline-block uppercase text-[13px] font-bold text-orange-500" aria-current="page">Cart</div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Shop -->
-    <section class="relative md:py-24 py-16">
+    <!-- Cart -->
+    <section class="relative md:py-24 py-16" x-data="cart">
         <div class="container relative mx-auto px-3">
             <div class="grid lg:grid-cols-1">
                 <div class="relative overflow-x-auto shadow dark:shadow-gray-800 rounded-md">
@@ -36,34 +36,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-gray-800">
-                                <td class="p-4 pr-0">
-                                    <a href="">
-                                        <div class="text-red-600 size-6">
+                            <template x-for="item in cart_items" :key="item.id">
+                                <tr class="bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-gray-800">
+                                    <td class="p-4 pr-0">
+                                        <div class="text-red-600 size-6" @click="updateQuantity(item.id, 0)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                     d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6z" />
                                             </svg>
                                         </div>
-                                    </a>
-                                </td>
-                                <td class="p-4">
-                                    <span class="flex items-center">
-                                        <img src="{{ url_for('app.static', filename='app/img/shop/white-sandals-summer-footwear.jpg') }}" class="rounded shadow dark:shadow-gray-800 w-12" alt="">
-                                    <span class="ms-3">
-                                    <span class="block font-semibold">T-shirt (M)</span>
-                                    </span></span>
-                                </td>
-                                <td class="p-4 text-center">$ 280</td>
-                                <td class="p-4 text-center">
-                                    <div class="qty-icons">
-                                        <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white minus">-</button>
-                                        <input min="0" name="quantity" type="number" readonly="" class="h-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white pointer-events-none w-16 ps-4 quantity mx-1" value="3">
-                                        <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white plus">+</button>
-                                    </div>
-                                </td>
-                                <td class="p-4  text-end">$ 840</td>
-                            </tr>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="flex items-center">
+                                            <img :src="item.image" class="rounded shadow dark:shadow-gray-800 w-12" alt="">
+                                        <span class="ms-3">
+                                        <span class="block font-semibold" x-text="item.name + ' (' + item.size + ')'"></span>
+                                        </span></span>
+                                    </td>
+                                    <td class="p-4 text-center" x-text="'$ ' + item.price"></td>
+                                    <td class="p-4 text-center">
+                                        <div>
+                                            <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white minus" @click="updateQuantity(item.id, item.quantity - 1)">-</button>
+                                            <input min="0" name="quantity" type="number" readonly="" class="h-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white pointer-events-none w-16 ps-4 quantity mx-1" :value="item.quantity">
+                                            <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white plus" @click="updateQuantity(item.id, item.quantity + 1)">+</button>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 text-end" x-text="'$ ' + item.total.toFixed(2)"></td>
+                                </tr>
+                            </template>
                             
                         </tbody>
                     </table>
@@ -95,5 +95,80 @@
         </div>
         
     </section>
+
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        // cart = JSON.parse('{{ cart | tojson | safe }}')
+        // console.log(cart)
+        Alpine.data('cart', () => ({
+            isOpen: false,
+            cart_items: JSON.parse('{{ cart | tojson | safe }}'),
+            total: 0,
+
+            async init() {
+                // await this.fetchCart();
+                this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                this.saveCart()
+                
+            },
+
+            toggle() {
+                this.isOpen = !this.isOpen
+            },
+
+            saveCart() {
+                localStorage.setItem('cart_items', JSON.stringify(this.cart_items));
+            },
+
+            async syncCart() {
+                try {
+                    await fetch('/validate_cart', {
+                        method: 'GET',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                }
+            },
+
+            async updateQuantity(itemId, newQuantity) {
+                item = this.cart_items.find(i => i.id === itemId);
+                if (item) {
+                    item.quantity = newQuantity;
+
+                    if (item.quantity <= 0) {
+                        this.cart_items = this.cart_items.filter(i => i.id !== itemId);
+                    }
+
+                    const formData = new FormData();
+                    formData.append('product_id', item.product_id);
+                    formData.append('variation_id', item.variation_id);
+                    formData.append('quantity', newQuantity);
+                    formData.append('csrf_token', '{{ csrf_token() }}');
+
+                    try {
+                        await fetch('/update_cart', {
+                            method: 'PUT',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
+                    } catch (error) {
+                        console.error('Error adding to cart:', error);
+                    }
+
+                }
+            }
+
+        }))
+    })
+</script>
+
 </section>
 {% endblock %}
