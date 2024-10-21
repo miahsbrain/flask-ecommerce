@@ -114,6 +114,7 @@ class OrderItem(db.Model):
     quantity = Column(Integer, nullable=False)
     variation_id = Column(Integer, ForeignKey('product_variations.id'), nullable=True)
     price_at_purchase = Column(Float, nullable=False)  # Store the price at the time of purchase
+    total_price = Column(Float, nullable=False, default=0)
     product = relationship('Product', uselist=False)
     product_variation = relationship('ProductVariation', uselist=False)
 

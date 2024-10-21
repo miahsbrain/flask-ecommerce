@@ -6,6 +6,7 @@ from project.utils.auth import authenticate, create_user, validate_email, update
 from project.extensions.dependencies import db
 from project.models.users import User, ProfilePicture
 from project.models.products import Product, ProductVariation, ProductVariationImage, Cart, CartItem, Order, OrderItem, ShippingAddress
+from functools import reduce
 
 app = Blueprint('app', __name__, template_folder='templates', static_folder='static', static_url_path='/')
 
@@ -216,7 +217,7 @@ def cart():
         'color': item.product_variation.color,
         'quantity': item.quantity,
         'image': item.product_variation.images[0].image_url,
-        'total': round(float(item.product_variation.product.price * item.quantity), 2)
+        'total': round(float(item.product_variation.price * item.quantity), 2)
     } for item in cart.items]
     
     return render_template('app/cart.html', cart=items)
@@ -321,6 +322,8 @@ def checkout():
         return render_template('app/checkout.html', checkout_items=items)
     elif request.method == 'POST':
         data = request.form
+
+        # SUCCESSFULLY CREATED NEW SHIPPING ADDRESS AND ORDER
         print(data)
         shipping_address = ShippingAddress(user=current_user,
                                            first_name=data['firstname'],
@@ -334,10 +337,28 @@ def checkout():
                                            zip_code=data['zipcode'],
                                            country=data['country']
                                            )
-        order = Order(user=current_user, )
-        print(shipping_address)
-        
+        total_price = round(reduce(lambda total, item: total+item, [(item.quantity * item.product_variation.price) for item in cart.items]), 2)
+        order = Order(user=current_user, shipping_address=shipping_address, total_price=total_price)
 
+        db.session.add(shipping_address)
+        db.session.add(order)
+
+        print(shipping_address)
+        print(order)
+
+        for item in list(cart.items):
+            order_item = OrderItem(order=order,
+                                   product_id=item.product_id,
+                                   variation_id=item.variation_id,
+                                   quantity=item.quantity,
+                                   price_at_purchase=item.product_variation.price,
+                                   total_price=round(float(item.product_variation.product.price * item.quantity), 2)
+                                   )
+            db.session.add(order_item)
+        
+        print(order.items)
+        print(order.total_price)
+        
         return render_template('app/checkout.html', checkout_items=items)
 
 @app.route('/orders')
