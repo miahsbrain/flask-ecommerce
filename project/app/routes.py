@@ -66,11 +66,12 @@ def signup():
 
         return render_template('app/signup.html')
 
-@app.route('/settings', methods=['GET', 'PUT'])
+@app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    if request.method == 'PUT':
+    if request.method == 'POST':
         data = request.form
+        print(data.get('fname'))
         if data.get('action') == 'picture-form':
             file = request.files.get('profile-picture')
             if file.filename == '':
@@ -90,7 +91,8 @@ def settings():
                 db.session.commit()
                 flash({'profile_picture':'Profile picture updated successfully!', 'cat': 'success'})
                 return render_template('app/settings.html')
-        elif data.get('action') == 'info-form':
+        elif data.get('action') == 'personal-info-form':
+            print('triggered')
             if data.get('fname'):
                 current_user.first_name = str(data.get('fname'))
                 db.session.commit()
@@ -99,6 +101,10 @@ def settings():
                 current_user.last_name = str(data.get('lname'))
                 db.session.commit()
                 flash({'l_name':'Last name updated successfully', 'cat': 'success'})
+            if data.get('phone'):
+                current_user.phone = int(data.get('phone'))
+                db.session.commit()
+                flash({'phone':'Phone number updated successfully', 'cat': 'success'})
             if data.get('email'):
                 email, error = validate_email(email=str(data.get('email')))
                 if email is not None:
@@ -107,9 +113,12 @@ def settings():
                     flash({'email':'Email address updated successfully', 'cat': 'success'})
                 else:
                     flash({'email':error, 'cat': 'danger'})
-        elif data.get('action') == 'password-form':
-            response = update_password(user=current_user, password=data.get('password'), confirm_password=data.get('cpassword'))
-            flash(response)
+        elif data.get('action') == 'security-info-form':
+            if current_user.check_password(data.get('oldpassword')):
+                response = update_password(user=current_user, password=data.get('newpassword'), confirm_password=data.get('confirmpassword'))
+                flash(response)
+            else:
+                flash({'oldpassword':'Invalid password for current user', 'cat': 'danger'})
 
     return render_template('app/settings.html')
 
@@ -154,7 +163,6 @@ def account():
                 'total': order.total_price,
                 'no_of_items': reduce(lambda total, item: total + item, [items.quantity for items in order.items])
             })
-    print(all_orders)
 
     return render_template('app/account.html', orders=all_orders)
 
@@ -164,7 +172,20 @@ def billing():
 
 @app.route('/payment')
 def payment():
-    return render_template('app/payment.html')
+    all_payments = []
+    for payment in current_user.payments:
+        all_payments.append({
+            'order_id': payment.order_id,
+            'transaction_id': payment.transaction_id,
+            'date': payment.created_at.strftime('%B %d, %Y'),
+            'payment_status': payment.payment_status,
+            'amount_paid': payment.amount_paid
+        })
+    return render_template('app/payment.html', payments=all_payments)
+
+@app.route('/orders')
+def complete_checkout():
+    return jsonify({'order': 'success'})
 
 @app.route('/social')
 def social():
@@ -410,12 +431,4 @@ def checkout():
                 return jsonify({"status": "failed", "message": "Payment amount mismatch"}), 400
         else:
             return jsonify({"status": "failed", "message": "Payment verification failed"}), 400
-
-
-
-    
-
-@app.route('/orders')
-def complete_checkout():
-    return jsonify({'order': 'success'})
 

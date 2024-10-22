@@ -12,6 +12,7 @@ class User(BaseModel, UserMixin):
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
+    phone = Column(String(100), nullable=True)
     password = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
     profile_picture = relationship("ProfilePicture", backref=backref('user'), uselist=False, cascade='all, delete-orphan')

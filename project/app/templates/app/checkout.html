@@ -32,31 +32,31 @@
                             <input type="text" name="csrf_token" value="{{ csrf_token() }}" hidden>
                             <div class="grid lg:grid-cols-12 grid-cols-1 mt-6 gap-5">
                                 <div class="lg:col-span-6">
-                                    <label class="form-label font-semibold">First Name: <span class="text-red-600">*</span></label>
+                                    <label class="font-semibold">First Name: <span class="text-red-600">*</span></label>
                                     <input type="text" class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2" placeholder="First Name:" id="firstname" name="firstname">
                                 </div>
                                 <div class="lg:col-span-6">
-                                    <label class="form-label font-semibold">Last Name: <span class="text-red-600">*</span></label>
+                                    <label class="font-semibold">Last Name: <span class="text-red-600">*</span></label>
                                     <input type="text" class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2" placeholder="Last Name:" id="lastname" name="lastname">
                                 </div>
                                 <div class="lg:col-span-6">
-                                    <label class="form-label font-semibold">Phone: <span class="text-red-600">*</span></label>
+                                    <label class="font-semibold">Phone: <span class="text-red-600">*</span></label>
                                     <div class="relative mt-2">
                                         <span class="absolute top-0.5 start-0.5 w-9 h-9 text-xl bg-gray-100 dark:bg-slate-800 inline-flex justify-center items-center text-dark dark:text-white rounded" id="basic-addon1">
                                             <i class="mdi mdi-at"></i>
                                         </span>
-                                        <input type="text" class="ps-12 w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0" placeholder="Phone:" name="phone">
+                                        <input type="number" class="ps-12 w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0" placeholder="Phone:" name="phone">
                                     </div>
                                 </div>
                                 <div class="lg:col-span-6">
-                                    <label class="form-label font-semibold">Your Email: <span class="text-red-600">*</span></label>
+                                    <label class="font-semibold">Your Email: <span class="text-red-600">*</span></label>
                                     <input type="email" class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2" placeholder="Email" name="email">
                                 </div>
                                 <div class="lg:col-span-12">
-                                    <label class="form-label font-semibold">Address: <span class="text-red-600">*</span></label><input type="text" class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2" placeholder="Address:" id="address" name="address">
+                                    <label class="font-semibold">Address: <span class="text-red-600">*</span></label><input type="text" class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2" placeholder="Address:" id="address" name="address">
                                 </div>
                                 <div class="lg:col-span-12">
-                                    <label class="form-label font-semibold">Address 2: </label>
+                                    <label class="font-semibold">Address 2: </label>
                                     <input type="text" class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2" placeholder="Address:" id="address" name="address2">
                                 </div>
                                 <div class="lg:col-span-3">
@@ -76,13 +76,13 @@
                                     </select>
                                 </div>
                                 <div class="lg:col-span-3">
-                                    <label class="form-label font-semibold">City: <span class="text-red-600">*</span></label>
+                                    <label class="font-semibold">City: <span class="text-red-600">*</span></label>
                                     <select class="form-select form-input mt-2 w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0" name="city">
                                         <option value="TEN">Tenesse</option>
                                     </select>
                                 </div>
                                 <div class="lg:col-span-3">
-                                    <label class="form-label font-semibold">Zip Code: <span class="text-red-600">*</span></label>
+                                    <label class="font-semibold">Zip Code: <span class="text-red-600">*</span></label>
                                     <input type="number" class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2" placeholder="Zip:" id="zipcode" name="zipcode">
                                 </div>
                                 <div class="lg:col-span-12">
@@ -125,19 +125,19 @@
                                                         class="text-slate-400">PayPal</span></label></div>
                                         </div>
                                     </div>
-                                    <div class="lg:col-span-6"><label class="form-label font-semibold">Account Holder Name :
+                                    <div class="lg:col-span-6"><label class="font-semibold">Account Holder Name :
                                             <span class="text-red-600">*</span></label><input type="text"
                                             class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2"
                                             placeholder="Name:" id="accountname" name="name"></div>
-                                    <div class="lg:col-span-6"><label class="form-label font-semibold">Credit card number :
+                                    <div class="lg:col-span-6"><label class="font-semibold">Credit card number :
                                             <span class="text-red-600">*</span></label><input type="number"
                                             class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2"
                                             placeholder="**** **** **** ****" id="cardnumber" name="number"></div>
-                                    <div class="lg:col-span-3"><label class="form-label font-semibold">Expiration : <span
+                                    <div class="lg:col-span-3"><label class="font-semibold">Expiration : <span
                                                 class="text-red-600">*</span></label><input type="number"
                                             class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2"
                                             placeholder="" id="expiration" name="number"></div>
-                                    <div class="lg:col-span-3"><label class="form-label font-semibold">CVV : <span
+                                    <div class="lg:col-span-3"><label class="font-semibold">CVV : <span
                                                 class="text-red-600">*</span></label><input type="number"
                                             class="w-full py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded outline-none border border-gray-100 dark:border-gray-800 focus:ring-0 mt-2"
                                             placeholder="" id="cvv" name="number"></div>
