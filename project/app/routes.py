@@ -229,6 +229,7 @@ def shop():
                 'name': product.name,
                 'description': product.description,
                 'price': primary_variation.price,
+                'variation_id': primary_variation.id,
                 'variation': f'{primary_variation.color} {primary_variation.size}',
                 'image_url': primary_image
             })
