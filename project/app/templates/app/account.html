@@ -106,15 +106,16 @@
                                      </tr>
                                  </thead>
                                  <tbody>
-                                     <tr class="bg-white dark:bg-slate-900 text-start">
-                                         <th class="px-2 py-3 text-start" scope="row">7107</th>
-                                         <td class="px-2 py-3 text-start">1st November 2021</td>
-                                         <td class="px-2 py-3 text-start text-green-600">Delivered</td>
-                                         <td class="px-2 py-3 text-start">$ 320 <span class="text-slate-400">for 2items</span></td>
-                                         <td class="px-2 py-3 text-start"><a href="javascript:void(0)" class="text-orange-500">View <i class="mdi mdi-chevron-right"></i></a></td>
-                                     </tr>
-         
-                                     <tr class="bg-white dark:bg-slate-900 text-start border-t border-gray-100 dark:border-gray-700">
+                                    {% for order in orders %}
+                                    <tr class="bg-white dark:bg-slate-900 text-start">
+                                        <th class="px-2 py-3 text-start" scope="row">{{ order.id }}</th>
+                                        <td class="px-2 py-3 text-start">{{ order.date }}</td>
+                                        <td class="px-2 py-3 text-start text-green-600">{{ order.status }}</td>
+                                        <td class="px-2 py-3 text-start">$ {{ order.total }} <span class="text-slate-400">for {{ order.no_of_items }} items</span></td>
+                                        <td class="px-2 py-3 text-start"><a href="javascript:void(0)" class="text-orange-500">View <i class="mdi mdi-chevron-right"></i></a></td>
+                                    </tr>
+                                    {% endfor %}
+                                     <!-- <tr class="bg-white dark:bg-slate-900 text-start border-t border-gray-100 dark:border-gray-700">
                                          <th class="px-2 py-3 text-start" scope="row">8007</th>
                                          <td class="px-2 py-3 text-start">4th November 2021</td>
                                          <td class="px-2 py-3 text-start text-slate-400">Processing</td>
@@ -128,13 +129,13 @@
                                          <td class="px-2 py-3 text-start text-red-600">Canceled</td>
                                          <td class="px-2 py-3 text-start">$ 800 <span class="text-slate-400">for 1item</span></td>
                                          <td class="px-2 py-3 text-start"><a href="javascript:void(0)" class="text-orange-500">View <i class="mdi mdi-chevron-right"></i></a></td>
-                                     </tr>
+                                     </tr> -->
                                  </tbody>
                              </table>
                          </div>
-         
-                         <h5 class="text-lg font-semibold my-6">My favourite Items</h5>
-         
+                         
+                         <!-- Favorites -->
+                         <!-- <h5 class="text-lg font-semibold my-6">My favourite Items</h5>
                          <div class="rounded-md shadow dark:shadow-gray-800 p-6">
                              <ul>
                                  <li class="flex justify-between items-center pb-6">
@@ -183,7 +184,7 @@
                                  </li>
                              </ul>
                          </div>
-                     </div>
+                     </div> -->
                      {% endblock %}
                 </div>
             </div>
@@ -226,6 +227,17 @@
             }
         }
     }
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('orders_favorites', () => ({
+            orders: JSON.parse('{{ orders | tojson | safe }}'),
+
+            async init() {
+                console.log(this.orders)
+            },
+
+        }))
+    });
 
 </script>
 {% endblock %}

@@ -4,12 +4,15 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from project.utils.auth import authenticate, create_user, validate_email, update_password
 from project.extensions.dependencies import db
-from project.models.users import User, ProfilePicture
-from project.models.products import Product, ProductVariation, ProductVariationImage, Cart, CartItem, Order, OrderItem, ShippingAddress
+from project.models.users import ProfilePicture
+from project.models.products import Product, Cart, CartItem, Order, OrderItem, ShippingAddress, Payment
 from functools import reduce
+import requests
 
 app = Blueprint('app', __name__, template_folder='templates', static_folder='static', static_url_path='/')
 
+PAYSTACK_SECRET_KEY = os.getenv('PAYSTACK_SECRET_KEY')
+PAYSTACK_PUBLIC_KEY = os.getenv('PAYSTACK_PUBLIC_KEY')
 UPLOADS_FOLDER = os.path.join(app.static_folder, 'app/uploads/')
 STATIC_URL_PATH = f'/{app.name}/uploads/'
 if not os.path.exists(UPLOADS_FOLDER): os.mkdir(UPLOADS_FOLDER)
@@ -141,7 +144,19 @@ def signout():
 
 @app.route('/account')
 def account():
-    return render_template('app/account.html')
+    all_orders = []
+    for order in current_user.orders:
+        if len(all_orders) < 3:
+            all_orders.append({
+                'id': order.id,
+                'date': order.created_at.strftime('%B %d, %Y'),
+                'status': order.status,
+                'total': order.total_price,
+                'no_of_items': reduce(lambda total, item: total + item, [items.quantity for items in order.items])
+            })
+    print(all_orders)
+
+    return render_template('app/account.html', orders=all_orders)
 
 @app.route('/billing')
 def billing():
@@ -319,72 +334,88 @@ def checkout():
     } for item in cart.items]
 
     if request.method == 'GET':
-        return render_template('app/checkout.html', checkout_items=items)
+        return render_template('app/checkout.html', checkout_items=items, public_key=PAYSTACK_PUBLIC_KEY)
+
     elif request.method == 'POST':
         data = request.form
-
-        # SUCCESSFULLY CREATED NEW SHIPPING ADDRESS AND ORDER
-        print(data)
-        shipping_address = ShippingAddress(user=current_user,
-                                           first_name=data['firstname'],
-                                           last_name=data['lastname'],
-                                           email=data['email'],
-                                           phone=data['phone'],
-                                           address_line_1=data['address'],
-                                           address_line_2=data['address2'],
-                                           city=data['city'],
-                                           state=data['state'],
-                                           zip_code=data['zipcode'],
-                                           country=data['country']
-                                           )
         total_price = round(reduce(lambda total, item: total+item, [(item.quantity * item.product_variation.price) for item in cart.items]), 2)
-        order = Order(user=current_user, shipping_address=shipping_address, total_price=total_price)
+        reference = data['reference']
 
-        db.session.add(shipping_address)
-        db.session.add(order)
+        headers = {
+            "Authorization": f"Bearer {PAYSTACK_SECRET_KEY}",
+            "Content-Type": "application/json"
+        }
 
-        print(shipping_address)
-        print(order)
+        # Verify the payment with Paystack
+        response = requests.get(f'https://api.paystack.co/transaction/verify/{reference}', headers=headers)
 
-        for item in list(cart.items):
-            order_item = OrderItem(order=order,
-                                   product_id=item.product_id,
-                                   variation_id=item.variation_id,
-                                   quantity=item.quantity,
-                                   price_at_purchase=item.product_variation.price,
-                                   total_price=round(float(item.product_variation.product.price * item.quantity), 2)
-                                   )
-            db.session.add(order_item)
-        
-        print(order.items)
-        print(order.total_price)
-        
-        return render_template('app/checkout.html', checkout_items=items)
+        if response.status_code == 200:
+            payment_data = response.json()['data']
+            
+            # Validate the amount (paystack returns amount in kobo for NGN or cents for USD)
+            paid_amount = payment_data['amount']
+            currency = payment_data['currency']
+
+            if currency == "USD":
+                expected_amount_in_cents = round(float(total_price * 100), 2)  # Convert USD to cents
+            else:
+                expected_amount_in_cents = round(float(total_price * 100), 2)  # Convert NGN or other currencies
+
+            if paid_amount == expected_amount_in_cents:
+                # Payment successful, proceed with creating the order
+
+                # SUCCESSFULLY CREATED NEW SHIPPING ADDRESS AND ORDER
+                shipping_address = ShippingAddress(user=current_user,
+                                                first_name=data['firstname'],
+                                                last_name=data['lastname'],
+                                                email=data['email'],
+                                                phone=data['phone'],
+                                                address_line_1=data['address'],
+                                                address_line_2=data['address2'],
+                                                city=data['city'],
+                                                state=data['state'],
+                                                zip_code=data['zipcode'],
+                                                country=data['country']
+                                                )
+                total_price = round(reduce(lambda total, item: total+item, [(item.quantity * item.product_variation.price) for item in cart.items]), 2)
+                order = Order(user=current_user, shipping_address=shipping_address, total_price=total_price)
+                payment = Payment(user=current_user, order=order, transaction_id=reference, email=data['email'], amount_paid=paid_amount, currency=currency, payment_status='Paid')
+                
+                db.session.add(shipping_address)
+                db.session.add(order)
+                db.session.add(payment)
+
+                # print(shipping_address)
+                # print(order)
+
+                for item in cart.items:
+                    order_item = OrderItem(order=order,
+                                        product_id=item.product_id,
+                                        variation_id=item.variation_id,
+                                        quantity=item.quantity,
+                                        price_at_purchase=item.product_variation.price,
+                                        total_price=round(float(item.product_variation.product.price * item.quantity), 2)
+                                        )
+                    db.session.add(order_item)
+
+                
+                print(order.items)
+                print(order.total_price)
+                print(payment)
+                CartItem.query.filter_by(cart_id=cart.id).delete()
+                db.session.commit()
+
+                return jsonify({"status": "success", "message": "Payment verified and order created", "order_id": order.id})
+            else:
+                return jsonify({"status": "failed", "message": "Payment amount mismatch"}), 400
+        else:
+            return jsonify({"status": "failed", "message": "Payment verification failed"}), 400
+
+
+
+    
 
 @app.route('/orders')
 def complete_checkout():
     return jsonify({'order': 'success'})
 
-
-
-
-# @app.route('/update_cart', methods=['POST'])
-# @login_required
-# def update_cart():
-#     data = request.form
-#     item_id = data['item_id']
-#     quantity = data['quantity']
-    
-#     cart_item = CartItem.query.get_or_404(item_id)
-    
-#     # Ensure user owns this cart item
-#     if cart_item.cart.user_id != current_user.id:
-#         return jsonify({'error': 'Unauthorized'}), 403
-    
-#     if quantity > 0:
-#         cart_item.quantity = quantity
-#     else:
-#         db.session.delete(cart_item)
-    
-#     db.session.commit()
-#     return jsonify({'status': 'success'})

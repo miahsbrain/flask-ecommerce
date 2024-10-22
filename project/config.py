@@ -2,9 +2,9 @@ import sys
 import os
 
 packages = [p for p in sys.path if 'site-packages' in p][-1]
-basedir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASEDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open(os.path.join(packages, 'project.pth'), 'w') as f:
-    f.write(basedir)
+    f.write(BASEDIR)
 
 class Config:
     """Base configuration."""

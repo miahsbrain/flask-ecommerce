@@ -28,7 +28,7 @@
                 <div class="lg:col-span-8">
                     <div class="p-6 rounded-md shadow dark:shadow-gray-800">
                         <h3 class="text-xl leading-normal font-semibold">Billing address</h3>
-                        <form method="POST">
+                        <form method="POST" id="checkout-form">
                             <input type="text" name="csrf_token" value="{{ csrf_token() }}" hidden>
                             <div class="grid lg:grid-cols-12 grid-cols-1 mt-6 gap-5">
                                 <div class="lg:col-span-6">
@@ -96,6 +96,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <input type="float" hidden name="total" :value="total">
                             <div class="mt-6">
                                 <input type="submit" class="py-2 px-5 inline-block tracking-wide align-middle duration-500 text-base text-center bg-orange-500 text-white rounded-md w-full" value="Continue to checkout">
                             </div>
@@ -179,14 +180,12 @@
                                 <div>
                                     <h5 class="font-semibold">Total (USD)</h5>
                                 </div>
-                                <p class="font-semibold" x-text="`$ ${total.toFixed(2)}`"></p>
+                                <p class="font-semibold" x-text="`$ ${total.toFixed(2)}`" id="total"></p>
                             </div>
                         </div>
                         <div class="subcribe-form mt-6">
-                            <div class="relative max-w-xl"><input type="email" id="subcribe" name="email"
-                                    class="py-4 pe-40 ps-6 w-full h-[50px] outline-none text-black dark:text-white rounded-full bg-white dark:bg-slate-900 shadow dark:shadow-gray-800"
-                                    placeholder="Promo code"><button type="submit"
-                                    class="py-2 px-5 inline-block font-semibold tracking-wide align-middle duration-500 text-base text-center absolute top-[2px] end-[3px] h-[46px] bg-orange-500 text-white rounded-full">Redeem</button>
+                            <div class="relative max-w-xl"><input type="email" id="subcribe" name="email" class="py-4 pe-40 ps-6 w-full h-[50px] outline-none text-black dark:text-white rounded-full bg-white dark:bg-slate-900 shadow dark:shadow-gray-800" placeholder="Promo code">
+                                <button type="submit" class="py-2 px-5 inline-block font-semibold tracking-wide align-middle duration-500 text-base text-center absolute top-[2px] end-[3px] h-[46px] bg-orange-500 text-white rounded-full">Redeem</button>
                             </div>
                         </div>
                     </div>
@@ -197,10 +196,9 @@
     </section>
 
 
+<script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
     document.addEventListener('alpine:init', () => {
-        // checkout_items = JSON.parse('{{ checkout_items | tojson | safe }}')
-        // console.log(checkout_items)
         Alpine.data('checkout_items', () => ({
             checkout_items: JSON.parse('{{ checkout_items | tojson | safe }}'),
             total: 0,
@@ -210,9 +208,44 @@
                 this.total = this.checkout_items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 this.total_items = this.checkout_items.reduce((sum, item) => sum + item.quantity, 0);
             },
-        
+            
         }))
-    })
+    });
+
+    const FORM = document.getElementById('checkout-form')
+    FORM.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        formData.append('csrf_token', '{{ csrf_token() }}')
+        try {
+            var handler = PaystackPop.setup({
+                key: '{{ public_key }}', // Replace with your public key
+                email: formData.get('email'),
+                amount: parseFloat(formData.get('total')) * 100, // Amount in kobo
+                currency: "NGN",
+                callback: function (response) {
+                    // alert('Payment successful. Transaction ref: ' + response.reference);
+                    formData.append('reference', response.reference)
+                    // You can now submit the order to your backend
+                    fetch('/checkout', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => {
+                        console.error('Error uploading image:', error);
+                    });
+                }
+            });
+            handler.openIframe();
+
+        } catch(error) {
+            console.log(error)
+        }
+    });
+    
+
 </script>
 </section>
 {% endblock %}

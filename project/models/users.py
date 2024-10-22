@@ -18,6 +18,7 @@ class User(BaseModel, UserMixin):
     products = relationship('Product', backref='user', lazy=True)
     cart = relationship('Cart', backref='user', uselist=False, lazy=True)
     orders = relationship('Order', backref='user', lazy=True)
+    payments = relationship('Payment', backref='user', lazy=True)
     shipping_address = relationship('ShippingAddress', backref='user', uselist=False, lazy=True)
 
     def __repr__(self) -> str:

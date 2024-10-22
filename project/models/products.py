@@ -92,7 +92,7 @@ class Order(BaseModel):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.uid'), nullable=False)
     total_price = Column(Float, nullable=False, default=0)
-    status = Column(String(50), default="Pending")  # Pending, Confirmed, Shipped, Delivered
+    status = Column(String(50), default="Processing")  # Processing, Confirmed, Shipped, Delivered
 
     # One order can have multiple items
     items = relationship('OrderItem', backref='order', lazy=True)
@@ -141,6 +141,24 @@ class ShippingAddress(db.Model):
     def __repr__(self):
         return f"<ShippingAddress {self.address_line_1}, {self.city}>"
 
+class Payment(db.Model):
+    __tablename__ = 'payments'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.uid', name='fk_payment_user'), nullable=False)  # ForeignKey to Order model
+    order_id = Column(Integer, ForeignKey('orders.id', name='fk_payment_order'), nullable=False)  # ForeignKey to Order model
+    transaction_id = Column(String(100), unique=True, nullable=False)
+    email = Column(String(120), nullable=False)
+    amount_paid = Column(Float, nullable=False)
+    payment_status = Column(String(20), default="Pending")  # Could be 'Pending', 'Paid', 'Failed', etc.
+    currency = Column(String(10), default="USD")
+    created_at = Column(DateTime, default=datetime.now(tz=timezone.utc))
+
+    # Relationship with Order model
+    order = db.relationship('Order', backref='payment', lazy=True)
+
+    def __repr__(self):
+        return f'<Payment {self.transaction_id}>'
 
 # # Rating model for product reviews
 # class Rating(db.Model):
