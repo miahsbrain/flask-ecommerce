@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, Response
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 import os
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
@@ -22,21 +22,43 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return render_template('app/index.html')
+    items = []
+    if session.get('cart'):
+        items = session.get('cart')
+        session.pop('cart')
+    return render_template('app/index.html', init_cart=items)
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
+
     if request.method == 'GET':
         if current_user.is_authenticated:
             return redirect(url_for('app.index'))
         return render_template('app/signin.html')
     elif request.method == 'POST':
+
         email = request.form.get('email')
         password = request.form.get('password')
         remember = True if request.form.get('remember-me') else False
         user, error = authenticate(email=email, password=password)
         flash(error)
+
         if user is not None:
+            cart = Cart.get_or_create(user)
+            items = [{
+                'id': item.id,
+                'product_id': item.product_variation.product.id,
+                'variation_id': item.variation_id,
+                'name': item.product_variation.product.name,
+                'price': round(float(item.product_variation.price), 2),
+                'size': item.product_variation.size,
+                'color': item.product_variation.color,
+                'quantity': item.quantity,
+                'image': item.product_variation.images[0].image_url,
+                'total': round(float(item.product_variation.price * item.quantity), 2)
+            } for item in cart.items]
+            session['cart'] = items
+
             login_user(user=user, remember=remember)
             return redirect(url_for('app.index'))
         return render_template('app/signin.html')
@@ -240,6 +262,7 @@ def product_details(product_id):
     return render_template('app/product_detail.html', product=product_data)
 
 @app.route('/cart')
+@login_required
 def cart():
     cart = Cart.get_or_create(current_user)
     
@@ -303,7 +326,21 @@ def add_to_cart():
             )
             db.session.add(cart_item)
         db.session.commit()
-    return jsonify({'message': 'success'})
+
+        items = [{
+            'id': item.id,
+            'product_id': item.product_variation.product.id,
+            'variation_id': item.variation_id,
+            'name': item.product_variation.product.name,
+            'price': float(item.product_variation.price),
+            'size': item.product_variation.size,
+            'color': item.product_variation.color,
+            'quantity': item.quantity,
+            'image': item.product_variation.images[0].image_url,
+            'total': round(float(item.product_variation.product.price * item.quantity), 2)
+        } for item in cart.items]
+        
+        return jsonify({'cart': items})
 
 @app.route('/update_cart', methods=['GET', 'PUT'])
 def update_cart():
@@ -328,6 +365,7 @@ def update_cart():
     items = [{
         'id': item.id,
         'product_id': item.product_variation.product.id,
+        'variation_id': item.variation_id,
         'name': item.product_variation.product.name,
         'price': float(item.product_variation.price),
         'size': item.product_variation.size,

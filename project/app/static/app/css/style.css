@@ -926,10 +926,6 @@ video {
   height: 2.5rem;
 }
 
-.h-28 {
-  height: 7rem;
-}
-
 .h-4 {
   height: 1rem;
 }
@@ -1048,6 +1044,12 @@ video {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.select-none {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 .list-none {
@@ -1441,10 +1443,6 @@ video {
 
 .pr-0 {
   padding-right: 0px;
-}
-
-.ps-11 {
-  padding-inline-start: 2.75rem;
 }
 
 .ps-12 {

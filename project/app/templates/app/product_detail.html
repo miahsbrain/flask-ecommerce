@@ -238,6 +238,7 @@
                         })
                         .then(response => response.json())
                         .then(data => {
+                            localStorage.setItem('cart_items', JSON.stringify(data.cart));
                             console.log(data)
                         })
                     } catch (error) {
