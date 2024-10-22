@@ -1,93 +1,30 @@
 {% extends 'app/account.html' %}
 {% block content2 %}
 <div class="w-full md:px-3 mt-6 md:mt-0">
-    <div class="rounded-md shadow dark:shadow-gray-800 bg-white dark:bg-slate-900">
-        <div class="p-6 md:flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
-            <div class="mb-4 md:mb-0">
-                <h5 class="text-xl font-semibold">Current Plan</h5>
-            </div>
-            <a href="" class="py-2 px-5 inline-block font-semibold tracking-wide align-middle duration-500 text-base text-center bg-primary text-white rounded-md">Switch to Annual Plan</a>
-        </div>
-
-        <div class="p-6">
-            <h5 class="text-2xl font-semibold">$18/Monthly</h5>
-            <p class="text-slate-400 mt-2">Your next monthly charge of $18 will be applied to your primary payment method on July 20, 2022.</p>
-        </div>
-    </div>
-
-    <div class="rounded-md shadow dark:shadow-gray-800 bg-white dark:bg-slate-900 mt-6">
-        <div class="p-6 border-b border-gray-100 dark:border-gray-700">
-            <h5 class="text-xl font-semibold">Payment Methods</h5>
-            <p class="text-slate-400 mt-2">Primary payment method is used by default</p>
-        </div>
-
-        <div class="px-6">
-            <div>
-                <div class="flex justify-between items-center py-6">
-                    <div class="flex items-center">
-                        <img src="{{ url_for('app.static', filename='app/img/payments/visa.jpg') }}" class="rounded shadow dark:shadow-gray-800 w-12" alt="">
-
-                        <div class="ms-3">
-                            <p class="font-semibold">Visa ending in 4578</p>
-                            <p class="text-slate-400 text-sm">Expires in 12/2022</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <a href="" class="size-9 inline-flex items-center justify-center tracking-wide align-middle duration-500 text-base text-center bg-red-600/5 hover:bg-red-600 text-red-600 hover:text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 h-4 w-4"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></a>
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-center py-6 border-t border-gray-100 dark:border-gray-700">
-                    <div class="flex items-center">
-                        <img src="{{ url_for('app.static', filename='app/img/payments/american-express.jpg') }}" class="rounded shadow dark:shadow-gray-800 w-12" alt="">
-
-                        <div class="ms-3">
-                            <p class="font-semibold">American Express ending in 4578</p>
-                            <p class="text-slate-400 text-sm">Expires in 12/2022</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <a href="" class="size-9 inline-flex items-center justify-center tracking-wide align-middle duration-500 text-base text-center bg-red-600/5 hover:bg-red-600 text-red-600 hover:text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 h-4 w-4"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></a>
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-center py-6 border-t border-gray-100 dark:border-gray-700">
-                    <div class="flex items-center">
-                        <img src="{{ url_for('app.static', filename='app/img/payments/discover.jpg') }}" class="rounded shadow dark:shadow-gray-800 w-12" alt="">
-
-                        <div class="ms-3">
-                            <p class="font-semibold">Discover ending in 4578</p>
-                            <p class="text-slate-400 text-sm">Expires in 12/2022</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <a href="" class="size-9 inline-flex items-center justify-center tracking-wide align-middle duration-500 text-base text-center bg-red-600/5 hover:bg-red-600 text-red-600 hover:text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 h-4 w-4"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></a>
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-center py-6 border-t border-gray-100 dark:border-gray-700">
-                    <div class="flex items-center">
-                        <img src="{{ url_for('app.static', filename='app/img/payments/mastercard.jpg') }}" class="rounded shadow dark:shadow-gray-800 w-12" alt="">
-
-                        <div class="ms-3">
-                            <p class="font-semibold">Master Card ending in 4578</p>
-                            <p class="text-slate-400 text-sm">Expires in 12/2022</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <a href="" class="size-9 inline-flex items-center justify-center tracking-wide align-middle duration-500 text-base text-center bg-red-600/5 hover:bg-red-600 text-red-600 hover:text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 h-4 w-4"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></a>
-                    </div>
-                </div>
-
-                <div class="py-6 border-t border-gray-100 dark:border-gray-700">
-                    <a href="javascript:void(0)" onclick="paymentMethod.showModal()" class="py-2 px-5 inline-block font-semibold tracking-wide align-middle duration-500 text-base text-center bg-primary text-white rounded-md">Add Payment Method</a>
-                </div>
-            </div>
-        </div>
+    <h5 class="text-lg font-semibold mb-6">My Payments</h5>
+    <div class="relative overflow-x-auto shadow dark:shadow-gray-800 rounded-md">
+        <table class="w-full text-start text-slate-500 dark:text-slate-400">
+            <thead class="text-sm uppercase bg-slate-50 dark:bg-slate-800">
+                <tr class="text-start">
+                    <th scope="col" class="px-2 py-3 text-start">Order no.</th>
+                    <th scope="col" class="px-2 py-3 text-start">Date</th>
+                    <th scope="col" class="px-2 py-3 text-start">Status</th>
+                    <th scope="col" class="px-2 py-3 text-start">Total</th>
+                    <th scope="col" class="px-2 py-3 text-start">Transaction ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr class="bg-white dark:bg-slate-900 text-start">
+                    <th class="px-2 py-3 text-start" scope="row">{{ payment.order_id }}</th>
+                    <td class="px-2 py-3 text-start">{{ payment.date }}</td>
+                    <td class="px-2 py-3 text-start text-slate-400">{{ payment.payment_status }}</td>
+                    <td class="px-2 py-3 text-start">$ {{ payment.amount_paid }}</td>
+                    <td class="px-2 py-3 text-start">{{ payment.transaction_id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
