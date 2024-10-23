@@ -1,4 +1,4 @@
-from project.models.products import Product, ProductVariation, ProductVariationImage
+from project.models.products import Product, ProductVariation, ProductVariationImage, Brand, Color
 from run import main_app
 from project.extensions.dependencies import db
 import json
@@ -54,30 +54,33 @@ with open('products.json', 'r') as f:
 
 with main_app.app_context():
     # Create a new product
-    for product in data:
-        new_product = Product(
-            name=product['name'],
-            description=product['description'],
-            price=product['price'],
-            stock=product['stock']
-        )
-        db.session.add(new_product)
+    # for product in data:
+    #     new_product = Product(
+    #         name=product['name'],
+    #         description=product['description'],
+    #         price=product['price'],
+    #         stock=product['stock']
+    #     )
+    #     db.session.add(new_product)
 
-        for variation in product['variations']:
-            new_variation = ProductVariation(
-                color=variation['color'],
-                size=variation['size'],
-                price=variation['price'],
-                stock=variation['stock'],
-                product = new_product
-            )
-            db.session.add(new_variation)
+    #     for variation in product['variations']:
+    #         new_variation = ProductVariation(
+    #             color=variation['color'],
+    #             size=variation['size'],
+    #             price=variation['price'],
+    #             stock=variation['stock'],
+    #             product = new_product
+    #         )
+    #         db.session.add(new_variation)
 
-            for images in variation['images']:
-                new_image = ProductVariationImage(
-                    image_url=images['image_url'],
-                    variation=new_variation
-                )
-                db.session.add(new_image)
+    #         for images in variation['images']:
+    #             new_image = ProductVariationImage(
+    #                 image_url=images['image_url'],
+    #                 variation=new_variation
+    #             )
+    #             db.session.add(new_image)
 
-        db.session.commit()
+    #     db.session.commit()
+
+    brand = Color.get_or_create('Gray')
+    print(brand)

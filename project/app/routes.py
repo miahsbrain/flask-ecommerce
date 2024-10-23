@@ -262,8 +262,8 @@ def shop():
                     colors.append(variation.color)
                 if variation.size not in sizes:
                     sizes.append(variation.size)
-                # if variation.brand not in brands:
-                #     brands.append(variation.brand)
+                if variation.brand not in brands:
+                    brands.append(variation.brand)
 
     for product in products:
         if product.variations:  # Ensure the product has variations

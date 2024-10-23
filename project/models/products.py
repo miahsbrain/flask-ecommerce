@@ -9,13 +9,14 @@ class Product(BaseModel):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
+    overview = Column(Text, nullable=True)
     description = Column(Text, nullable=False)
-    price = Column(Float, nullable=False)  # Base price, can be overridden by variation
-    stock = Column(Integer, nullable=False, default=1)  # General stock, variations override if needed
-
+    brand =  relationship('Brand', uselist=False, lazy=True)
+    highlight =  relationship('Highlight', uselist=True, lazy=True, cascade='all, delete-orphan')
     user_id = Column(Integer, ForeignKey('users.uid', name='fk_products_user'))
+    
     # Relationship to ProductVariation
-    variations = relationship('ProductVariation', backref='product', lazy=True)
+    variations = relationship('ProductVariation', backref='product', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Product {self.name}>'
@@ -25,9 +26,11 @@ class ProductVariation(BaseModel):
     __tablename__ = 'product_variations'
 
     id = Column(Integer, primary_key=True)
-    color = Column(String(50), nullable=False)  # Color variation
-    size = Column(String(50), nullable=True)  # Size variation, optional
+    color = relationship('Color', uselist=False, lazy=True)  # Color variation
+    _size = Column(String(50), nullable=True)  # Size variation, optional
     price = Column(Float, nullable=False)  # Price specific to this variation
+    sale = Column(Float, nullable=True)
+    featured = Column(Boolean, nullable=True, default=False)
     stock = Column(Integer, nullable=False, default=1)  # Stock for this variation
 
     product_id = Column(Integer, ForeignKey('products.id', name='fk_product_variations_product'), nullable=False)
@@ -35,9 +38,79 @@ class ProductVariation(BaseModel):
     # Relationship to ProductVariationImage
     images = relationship('ProductVariationImage', backref='variation', lazy=True)
 
+    @property
+    def size(self):
+        return self._size
+
+    @size.setter
+    def size(self, value):
+        self._size = value.upper()  # Ensures the brand is always uppercase
+
     def __repr__(self):
         return f'<ProductVariation {self.color} {self.size}>'
+        
 
+class Color(db.Model):
+    __tablename__ = 'colors'
+
+    id = Column(Integer, primary_key=True)
+    variation_id = Column(Integer, ForeignKey('product_variations.id', name='fk_colors_product_variation'))
+    _color = Column(String(50), nullable=True, default='Gray')
+    _hex = color = Column(String(50), nullable=True, default='#808080')
+
+    @classmethod
+    def get_or_create(cls, color_name):
+        color = cls.query.filter(cls._color.ilike(color_name)).first()
+
+        if color:
+            return color
+        else:
+            new_color = cls(color=color_name)
+            db.session.add(new_color)
+            db.session.commit()
+            return new_color
+
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, value):
+        self._color = value.lower()  # Ensures the brand is always lowercase
+
+    @property
+    def hex(self):
+        return self._hex
+
+    @hex.setter
+    def hex(self, value):
+        self._hex = value.upper()  # Ensures the brand is always uppercase
+
+class Brand(db.Model):
+    __tablename__ = 'brands'
+
+    id = Column(Integer, primary_key=True)
+    brand_id = Column(Integer, ForeignKey('products.id', name='fk_brands_product'))
+    brand = Column(String(50), nullable=True)
+
+    @classmethod
+    def get_or_create(cls, brand_name):
+        brand = cls.query.filter(cls.brand.ilike(brand_name)).first()
+
+        if brand:
+            return brand
+        else:
+            new_brand = cls(brand=brand_name)
+            db.session.add(new_brand)
+            db.session.commit()
+            return new_brand
+
+class Highlight(db.Model):
+    __tablename__ = 'highlights'
+
+    id = Column(Integer, primary_key=True)
+    highlight_id = Column(Integer, ForeignKey('products.id', name='fk_highlights_product'))
+    highlight = Column(String(50), nullable=True)
 
 class ProductVariationImage(db.Model):
     __tablename__ = 'product_variation_images'
