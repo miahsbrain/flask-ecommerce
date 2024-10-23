@@ -10,13 +10,13 @@
             <div class="relative mt-3">
                 <div class="tracking-[0.5px] mb-0 inline-block">
                     <div
-                        class="inline-block uppercase text-[13px] font-bold duration-300 ease-in-out hover:text-orange-500">
+                        class="inline-block uppercase text-[13px] font-bold duration-300 ease-in-out hover:text-primary">
                         <a href="">Cartzio</a>
                     </div>
                     <div
                         class="inline-block text-base text-slate-950 dark:text-white mx-0.5 ltr:rotate-0 rtl:rotate-180">
                         &rarr;</div>
-                    <div class="inline-block uppercase text-[13px] font-bold text-orange-500" aria-current="page">Shop Detail</div>
+                    <div class="inline-block uppercase text-[13px] font-bold text-primary" aria-current="page">Shop Detail</div>
                 </div>
             </div>
         </div>
@@ -67,11 +67,11 @@
                         <h5 class="text-lg font-semibold">Overview:</h5>
                         <p class="text-slate-400 mt-2">{{ product.description }}</p>
                         <!-- <ul class="list-none text-slate-400 mt-4">
-                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
+                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-primary text-xl me-2"></i>
                                 Digital Marketing Solutions for Tomorrow</li>
-                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
+                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-primary text-xl me-2"></i>
                                 Our Talented &amp; Experienced Marketing Agency</li>
-                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-orange-500 text-xl me-2"></i>
+                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-primary text-xl me-2"></i>
                                 Create your own skin to match your brand</li>
                         </ul> -->
                     </div>
@@ -83,7 +83,7 @@
                                 <template x-for="size in uniqueSizes" :key="size">
                                     <label class="radio-label">
                                         <input type="radio" name="size" :value="size" @change="filterColors(size)" :checked="size === selectedSize" class="hidden peer">
-                                        <div class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white peer-checked:bg-green-500" x-text="size"></div>
+                                        <div class="size-7 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md border border-gray-100 dark:border-gray-800 text-slate-900 dark:text-gray-50 hover:border-slate-900 dark:hover:border-gray-100 hover:text-white dark:hover:text-slate-900 hover:bg-slate-900 dark:hover:bg-slate-100 peer-checked:bg-primary peer-checked:text-white" x-text="size"></div>
                                     </label>
                                 </template>
                             </div>
@@ -91,9 +91,9 @@
                         <div class="flex items-center">
                             <h5 class="text-lg font-semibold me-2">Quantity:</h5>
                             <div class="ms-3 space-x-0.5">
-                                <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white minus" @click="updateQuantity('neg')">-</button>
-                                <input min="0" name="quantity" type="number" :value="selectedQuantity" class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white pointer-events-none w-16 ps-4">
-                                <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white plus" @click="updateQuantity('pos')">+</button>
+                                <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-primary/5 hover:bg-primary text-primary hover:text-white minus" @click="updateQuantity('neg')">-</button>
+                                <input min="0" name="quantity" type="number" :value="selectedQuantity" class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-primary/5 hover:bg-primary text-primary hover:text-white pointer-events-none w-16 ps-4">
+                                <button class="size-9 inline-flex items-center justify-center tracking-wide align-middle text-base text-center rounded-md bg-primary/5 hover:bg-primary text-primary hover:text-white plus" @click="updateQuantity('pos')">+</button>
                             </div>
                         </div>
                         <div class="flex items-center">
@@ -103,15 +103,15 @@
                                 <template x-for="color in uniqueColors" :key="color">
                                     <label class="radio-label">
                                         <input type="radio" name="color" :value="color" @change="filterSizes(color)" :checked="color === selectedColor" class="hidden peer">
-                                        <div class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-red-600 inline-flex align-middle peer-checked:bg-green-500" x-text="color"></div>
+                                        <div class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-red-600 inline-flex align-middle peer-checked:ring-primary" :style="'background-color: ' + color.hex"></div>
                                     </label>
                                 </template>
                             </div>
                         </div>
                     </div>
                     <div class="mt-4 space-x-1">
-                        <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-orange-500 text-white rounded-md mt-2" href="">Shop Now</a>
-                        <div class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2 cursor-pointer" @click="addToCart()">Add to Cart</div>
+                        <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-primary text-white rounded-md mt-2" href="">Shop Now</a>
+                        <div class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-primary/5 hover:bg-primary text-primary hover:text-white mt-2 cursor-pointer" @click="addToCart()">Add to Cart</div>
                     </div>
                 </div>
             </div>
@@ -121,13 +121,13 @@
                         <ul class="flex-column p-6 bg-white dark:bg-slate-900 shadow dark:shadow-gray-800 rounded-md" id="myTab"
                             data-tabs-toggle="#myTabContent" role="tablist">
                             <li class="ms-0"><button
-                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:bg-orange-500 duration-500 text-white bg-orange-500 hover:text-white">Description</button>
+                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:bg-primary duration-500 text-white bg-primary hover:text-white">Description</button>
                             </li>
                             <li class="ms-0"><button
-                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-orange-500 duration-500 ">Additional
+                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Additional
                                     Information</button></li>
                             <li class="ms-0"><button
-                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-orange-500 duration-500 ">Review</button>
+                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Review</button>
                             </li>
                         </ul>
                     </div>

@@ -224,25 +224,15 @@
             total: 0,
 
             async init() {
-                this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
             },
 
             toggle() {
                 this.isOpen = !this.isOpen
             },
 
-            async syncCart() {
-                try {
-                    await fetch('/validate_cart', {
-                        method: 'GET',
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data)
-                    })
-                } catch (error) {
-                    console.error('Error adding to cart:', error);
-                }
+            async syncCart(cart) {
+                localStorage.setItem('cart_items', JSON.stringify(cart));
             },
 
             async updateQuantity(itemId, newQuantity) {
@@ -268,6 +258,7 @@
                         .then(response => response.json())
                         .then(data => {
                             localStorage.setItem('cart_items', JSON.stringify(data.cart));
+                            this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
                         })
                     } catch (error) {
                         console.error('Error adding to cart:', error);
@@ -293,6 +284,7 @@
                         .then(response => response.json())
                         .then(data => {
                             localStorage.setItem('cart_items', JSON.stringify(data.cart));
+                            this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
                         })
                 } catch (error) {
                     console.error('Error adding to cart:', error);
