@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from project.utils.auth import authenticate, create_user, validate_email, update_password
 from project.extensions.dependencies import db
 from project.models.users import ProfilePicture
-from project.models.products import Product, Cart, CartItem, Order, OrderItem, ShippingAddress, Payment
+from project.models.products import Product, ProductVariation, Cart, CartItem, Order, OrderItem, ShippingAddress, Payment
 from functools import reduce
 import requests
 
@@ -215,6 +215,64 @@ def social():
 
 @app.route('/shop')
 def shop():
+    # Get the filter values from the request args
+    name_filter = request.args.get('s', '')
+    color_filter = request.args.get('color', '')
+    brand_filter = request.args.get('brand', '')
+    size_filter = request.args.get('size', '')
+
+    # Start with a base query
+    query = Product.query.join(Product.variations)  # Join with the variation table
+
+    # Apply filters if any
+    if name_filter:
+        query = query.filter(Product.name.ilike(f"%{name_filter}%"))  # Case-insensitive search
+    if color_filter:
+        query = query.filter(ProductVariation.color == color_filter)
+    if brand_filter:
+        query = query.filter(Product.brand == brand_filter)
+    if size_filter:
+        query = query.filter(ProductVariation.size == size_filter)
+
+    # Execute the query
+    products = query.all()
+
+    # For each product, choose a default or first variation to display
+    product_data = []
+    colors = []
+    sizes = []
+    brands = []
+
+    for product in Product.query.all():
+        if product.variations:  # Ensure the product has variations
+            for variation in product.variations:
+                if variation.color not in colors:
+                    colors.append(variation.color)
+                if variation.size not in sizes:
+                    sizes.append(variation.size)
+                # if variation.brand not in brands:
+                #     brands.append(variation.brand)
+
+    for product in products:
+        if product.variations:  # Ensure the product has variations
+            primary_variation = product.variations[0]  # Default to the first variation
+            primary_image = primary_variation.images[0].image_url if primary_variation.images else '/static/default_image.jpg'
+
+            product_data.append({
+                'id': product.id,
+                'name': product.name,
+                'description': product.description,
+                'price': primary_variation.price,
+                'variation_id': primary_variation.id,
+                'variation': f'{primary_variation.color} {primary_variation.size}',
+                'image_url': primary_image
+            })
+
+    return render_template('app/shop.html', products=product_data, colors=colors, sizes=sizes)
+
+@app.route('/search')
+def search():
+    data = request.args
     products = Product.query.all()  # Get all products
 
     # For each product, choose a default or first variation to display
@@ -233,7 +291,7 @@ def shop():
                 'variation': f'{primary_variation.color} {primary_variation.size}',
                 'image_url': primary_image
             })
-    return render_template('app/shop.html', products=product_data)
+    return render_template('app/dummy.html', products=product_data)
 
 @app.route('/product_detail/<int:product_id>')
 def product_details(product_id):

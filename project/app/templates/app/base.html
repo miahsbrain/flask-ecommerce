@@ -58,13 +58,15 @@
                             x-show="dropDown"
                             @click.outside=" dropDown = false "
                             >
-                                <div class="relative">
-                                    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="absolute size-4 top-[9px] end-3 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    </svg>
-                                    <input type="text" class="h-9 px-3 pe-10 w-full border-0 focus:ring-0 outline-none bg-white dark:bg-slate-900" name="s" id="searchItem" placeholder="Search...">
-                                </div>
+                                <form action="{{ url_for('app.shop') }}" method="GET" x-ref="headSearchForm">
+                                    <div class="relative">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="absolute size-4 top-[9px] end-3 text-slate-900 dark:text-white hover:text-primary" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" @click="$refs.headSearchForm.submit()">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                        <input type="text" class="h-9 px-3 pe-10 w-full border-0 focus:ring-0 outline-none bg-white dark:bg-slate-900" name="s" id="searchItem" placeholder="Search..." @keyup.enter="$refs.headSearchForm.submit()">
+                                    </div>
+                                </form>
                             </div>
                         </div>
                         <div class="size-9 aspect-square rounded-full overflow-hidden bg-primary text-white p-2 cursor-pointer">

@@ -839,6 +839,10 @@ video {
   margin-top: 2rem;
 }
 
+.mt-20 {
+  margin-top: 5rem;
+}
+
 .line-clamp-1 {
   overflow: hidden;
   display: -webkit-box;
@@ -920,6 +924,11 @@ video {
 .size-\[40px\] {
   width: 40px;
   height: 40px;
+}
+
+.size-8 {
+  width: 2rem;
+  height: 2rem;
 }
 
 .h-10 {
@@ -1983,6 +1992,10 @@ img {
   background-color: rgb(56 163 165 / var(--tw-bg-opacity));
 }
 
+.hover\:cursor-pointer:hover {
+  cursor: pointer;
+}
+
 .hover\:border-orange-500:hover {
   --tw-border-opacity: 1;
   border-color: rgb(249 115 22 / var(--tw-border-opacity));
@@ -2020,6 +2033,11 @@ img {
 .hover\:bg-slate-900:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-primary:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(56 163 165 / var(--tw-bg-opacity));
 }
 
 .hover\:text-orange-500:hover {
@@ -2109,6 +2127,16 @@ img {
 .peer:checked ~ .peer-checked\:bg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(34 197 94 / var(--tw-bg-opacity));
+}
+
+.peer:checked ~ .peer-checked\:bg-slate-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+}
+
+.peer:checked ~ .peer-checked\:text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .peer:focus ~ .peer-focus\:text-primary {
