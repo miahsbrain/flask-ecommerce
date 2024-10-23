@@ -48,10 +48,10 @@
                                 <div class="mt-4">
                                     <h5 class="font-medium">Colors:</h5>
                                     <div class="mt-2 flex gap-1 flex-wrap">
-                                        <template x-for="color in uniqueColors" :key="color">
+                                        <template x-for="color in uniqueColors" :key="color.color">
                                             <label class="inline">
-                                                <input type="radio" x-ref="color" name="color" :value="color" @change="color; handleSubmit()" :checked="color === selectedColor" class="hidden peer">
-                                                <div class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 inline-flex align-middle peer-checked:ring-primary" :style="'background-color: ' + 'color.hex'"></div>
+                                                <input type="radio" x-ref="color" name="color" :value="color.color" @change="handleSubmit()" :checked="color.color === selectedColor" class="hidden peer">
+                                                <div class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 inline-flex align-middle peer-checked:ring-primary" :style="'background-color: ' + color.hex"></div>
                                             </label>
                                         </template>
                                     </div>
@@ -225,7 +225,7 @@
             selectedPage: "{{ request.args.get('page', 1) }}",
 
             init() {
-                
+                console.log(this.uniqueColors[0].hex)
             },
 
             handleSubmit() {

@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from project.utils.auth import authenticate, create_user, validate_email, update_password
 from project.extensions.dependencies import db
 from project.models.users import ProfilePicture
-from project.models.products import Product, ProductVariation, Cart, CartItem, Order, OrderItem, ShippingAddress, Payment
+from project.models.products import Product, ProductVariation, Cart, CartItem, Order, OrderItem, ShippingAddress, Payment, Color, Brand, Size
 from functools import reduce
 import requests
 
@@ -226,13 +226,13 @@ def shop():
     per_page = 2  # Number of products per page
 
     # Start with a base query
-    query = Product.query
+    query = Product.query.join(ProductVariation)
 
     # Apply filters if any
     if color_filter:
-        query = query.filter(Product.variations.any(color=color_filter))
+        query = query.join(Color).filter(Color._color==color_filter)
     if size_filter:
-        query = query.filter(Product.variations.any(size=size_filter))
+        query = query.join(Size).filter(Size._size==size_filter)
     if name_filter:
         query = query.filter(Product.name.ilike(f"%{name_filter}%"))
 
@@ -245,9 +245,10 @@ def shop():
     info = f'Showing {((page - 1) * per_page)}-{(page * per_page)} of {total_products} items'
     print(info)
 
-    print(products)
-    print(total_pages)
-    print(total_products)
+    # print(products)
+    # print(total_pages)
+    # print(total_products)
+
 
     # For each product, choose a default or first variation to display
     product_data = []
@@ -255,15 +256,16 @@ def shop():
     sizes = []
     brands = []
 
-    for product in Product.query.all():
-        if product.variations:  # Ensure the product has variations
-            for variation in product.variations:
-                if variation.color not in colors:
-                    colors.append(variation.color)
-                if variation.size not in sizes:
-                    sizes.append(variation.size)
-                if variation.brand not in brands:
-                    brands.append(variation.brand)
+    for color in Color.query.all():
+        colors.append({
+            'color': color.color,
+            'hex': color.hex
+        })
+    for size in Size.query.all():
+        sizes.append(size.size)
+    for brand in Brand.query.all():
+        brands.append(brand.brand)
+
 
     for product in products:
         if product.variations:  # Ensure the product has variations
@@ -275,12 +277,14 @@ def shop():
                 'name': product.name,
                 'description': product.description,
                 'price': primary_variation.price,
+                'sale': primary_variation.sale,
+                'featured': primary_variation.featured,
                 'variation_id': primary_variation.id,
                 'variation': f'{primary_variation.color} {primary_variation.size}',
                 'image_url': primary_image
             })
 
-    return render_template('app/shop.html', products=product_data, colors=colors, sizes=sizes, page=page, total_pages=total_pages, info=info)
+    return render_template('app/shop.html', products=product_data, colors=colors, sizes=sizes, brands=brands, page=page, total_pages=total_pages, info=info)
 
 
 @app.route('/product_detail/<int:product_id>')
