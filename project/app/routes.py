@@ -221,21 +221,33 @@ def shop():
     brand_filter = request.args.get('brand', '')
     size_filter = request.args.get('size', '')
 
+    # Get page from query params, default to 1
+    page = request.args.get('page', 1, type=int)
+    per_page = 2  # Number of products per page
+
     # Start with a base query
-    query = Product.query.join(Product.variations)  # Join with the variation table
+    query = Product.query
 
     # Apply filters if any
-    if name_filter:
-        query = query.filter(Product.name.ilike(f"%{name_filter}%"))  # Case-insensitive search
     if color_filter:
-        query = query.filter(ProductVariation.color == color_filter)
-    if brand_filter:
-        query = query.filter(Product.brand == brand_filter)
+        query = query.filter(Product.variations.any(color=color_filter))
     if size_filter:
-        query = query.filter(ProductVariation.size == size_filter)
+        query = query.filter(Product.variations.any(size=size_filter))
+    if name_filter:
+        query = query.filter(Product.name.ilike(f"%{name_filter}%"))
 
+    # Paginate the query
+    total_products = query.count()
+    # Calculate the number of total pages
+    total_pages = round(total_products / per_page)
     # Execute the query
-    products = query.all()
+    products = query.offset((page - 1) * per_page).limit(per_page).all()
+    info = f'Showing {((page - 1) * per_page)}-{(page * per_page)} of {total_products} items'
+    print(info)
+
+    print(products)
+    print(total_pages)
+    print(total_products)
 
     # For each product, choose a default or first variation to display
     product_data = []
@@ -268,30 +280,8 @@ def shop():
                 'image_url': primary_image
             })
 
-    return render_template('app/shop.html', products=product_data, colors=colors, sizes=sizes)
+    return render_template('app/shop.html', products=product_data, colors=colors, sizes=sizes, page=page, total_pages=total_pages, info=info)
 
-@app.route('/search')
-def search():
-    data = request.args
-    products = Product.query.all()  # Get all products
-
-    # For each product, choose a default or first variation to display
-    product_data = []
-    for product in products:
-        if product.variations:  # Ensure the product has variations
-            primary_variation = product.variations[0]  # Default to the first variation
-            primary_image = primary_variation.images[0].image_url if primary_variation.images else '/static/default_image.jpg'
-
-            product_data.append({
-                'id': product.id,
-                'name': product.name,
-                'description': product.description,
-                'price': primary_variation.price,
-                'variation_id': primary_variation.id,
-                'variation': f'{primary_variation.color} {primary_variation.size}',
-                'image_url': primary_image
-            })
-    return render_template('app/dummy.html', products=product_data)
 
 @app.route('/product_detail/<int:product_id>')
 def product_details(product_id):

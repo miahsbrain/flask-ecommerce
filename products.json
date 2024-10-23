@@ -1,0 +1,213 @@
+[
+    {
+        "name": "Stylish T-Shirt",
+        "description": "A cool, stylish t-shirt available in multiple colors and sizes.",
+        "price": 19.99,
+        "stock": 100,
+        "variations": [
+            {
+                "color": "Red",
+                "size": "M",
+                "price": 19.99,
+                "stock": 50,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/3854982/pexels-photo-3854982.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            },
+            {
+                "color": "Blue",
+                "size": "L",
+                "price": 21.99,
+                "stock": 30,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/12446409/pexels-photo-12446409.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Classic Denim Jeans",
+        "description": "High-quality denim jeans with a perfect fit.",
+        "price": 49.99,
+        "stock": 200,
+        "variations": [
+            {
+                "color": "Black",
+                "size": "32",
+                "price": 49.99,
+                "stock": 80,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/4210863/pexels-photo-4210863.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            },
+            {
+                "color": "Blue",
+                "size": "34",
+                "price": 54.99,
+                "stock": 60,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/4210866/pexels-photo-4210866.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Summer Sandals",
+        "description": "Lightweight and comfortable sandals for the summer season.",
+        "price": 29.99,
+        "stock": 150,
+        "variations": [
+            {
+                "color": "Beige",
+                "size": "M",
+                "price": 29.99,
+                "stock": 70,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/8989556/pexels-photo-8989556.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            },
+            {
+                "color": "Brown",
+                "size": "L",
+                "price": 31.99,
+                "stock": 50,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/29014902/pexels-photo-29014902/free-photo-of-beach-sandals-on-sunny-rio-de-janeiro-beach.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Casual Sneakers",
+        "description": "Trendy sneakers for everyday wear.",
+        "price": 59.99,
+        "stock": 120,
+        "variations": [
+            {
+                "color": "White",
+                "size": "M",
+                "price": 59.99,
+                "stock": 50,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/28996381/pexels-photo-28996381/free-photo-of-urban-ballet-dancer-performing-a-dance-pose-outdoors.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            },
+            {
+                "color": "Black",
+                "size": "L",
+                "price": 64.99,
+                "stock": 40,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/1476209/pexels-photo-1476209.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Formal Leather Shoes",
+        "description": "Elegant leather shoes for formal occasions.",
+        "price": 89.99,
+        "stock": 90,
+        "variations": [
+            {
+                "color": "Brown",
+                "size": "L",
+                "price": 89.99,
+                "stock": 30,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/292998/pexels-photo-292998.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            },
+            {
+                "color": "Black",
+                "size": "XL",
+                "price": 94.99,
+                "stock": 20,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/2857040/pexels-photo-2857040.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Cotton Hoodie",
+        "description": "Soft cotton hoodie for chilly weather.",
+        "price": 39.99,
+        "stock": 130,
+        "variations": [
+            {
+                "color": "Gray",
+                "size": "M",
+                "price": 39.99,
+                "stock": 60,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/12911542/pexels-photo-12911542.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            },
+            {
+                "color": "Navy",
+                "size": "L",
+                "price": 44.99,
+                "stock": 40,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/6311670/pexels-photo-6311670.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Sports Cap",
+        "description": "Stylish cap for outdoor sports and casual wear.",
+        "price": 15.99,
+        "stock": 250,
+        "variations": [
+            {
+                "color": "Black",
+                "size": "M",
+                "price": 15.99,
+                "stock": 120,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/3369264/pexels-photo-3369264.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            },
+            {
+                "color": "White",
+                "size": "L",
+                "price": 17.99,
+                "stock": 90,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/3806059/pexels-photo-3806059.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            }
+        ]
+    }
+    
+]
