@@ -1,8 +1,18 @@
 from project.models.base import BaseModel
-from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, Text, Float, DateTime
+from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, Text, Float, DateTime, Table
 from datetime import datetime, timezone
 from project.extensions.dependencies import db
 from sqlalchemy.orm import relationship
+
+
+# Many to many relationship table for product and product highlights
+product_highlight = Table(
+    'product_highlight', 
+    db.Model.metadata,
+    Column('product_id', Integer, ForeignKey('products.id'), primary_key=True),
+    Column('highlight_id', Integer, ForeignKey('highlights.id'), primary_key=True)
+)
+
 
 class Product(BaseModel):
     __tablename__ = 'products'
@@ -12,8 +22,8 @@ class Product(BaseModel):
     overview = Column(Text, nullable=True)
     description = Column(Text, nullable=False)
     brand_id = Column(Integer, ForeignKey('brands.id', name='fk_products_brand'))
-    brand =  relationship('Brand', uselist=False, lazy=True)
-    highlights =  relationship('Highlight', uselist=True, lazy=True, cascade='all, delete-orphan')
+    brand = relationship('Brand', uselist=False, lazy=True)
+    highlights = relationship('Highlight', secondary=product_highlight, back_populates='products')
     user_id = Column(Integer, ForeignKey('users.uid', name='fk_products_user'))
     
     # Relationship to ProductVariation
@@ -126,8 +136,8 @@ class Highlight(db.Model):
     __tablename__ = 'highlights'
 
     id = Column(Integer, primary_key=True)
-    product_id = Column(Integer, ForeignKey('products.id', name='fk_highlights_product'))
-    highlight = Column(String(150), nullable=True)
+    highlight = Column(String(150), nullable=False)
+    products = relationship('Product', secondary=product_highlight, back_populates='highlights')
 
     @classmethod
     def get_or_create(cls, highlight_name):

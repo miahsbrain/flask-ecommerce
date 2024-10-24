@@ -303,7 +303,6 @@ def product_details(product_id):
     # Prepare data for product variations and images
     variations = []
     for variation in product.variations:
-        print(variation.color.color)
         images = [image.image_url for image in variation.images]
         variations.append({
             'variation_id': variation.id,
@@ -313,10 +312,15 @@ def product_details(product_id):
             'images': images,
         })
 
+    print(product.highlights)
+
     product_data = {
         'id': product_id,
         'name': product.name,
         'description': product.description,
+        'overview': product.overview,
+        'highlights': [highlight.highlight for highlight in product.highlights],
+        'brand': product.brand.brand,
         'variations': variations
     }
 

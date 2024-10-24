@@ -63,6 +63,8 @@ with main_app.app_context():
             highlights=[Highlight.get_or_create(highlight['highlight']) for highlight in product['highlight']]
         )
         db.session.add(new_product)
+        db.session.commit()
+        print(new_product.highlights)
 
         for variation in product['variations']:
             new_variation = ProductVariation(
@@ -84,3 +86,11 @@ with main_app.app_context():
                 db.session.add(new_image)
 
         db.session.commit()
+
+    # product = data[1]
+    # e_product = Product.query.filter(Product.name.ilike('Premium Hoodie')).first()
+    # # e_product.highlights = [Highlight.get_or_create('Soft Fabric'), Highlight.get_or_create('Warm')]
+    # e_product.highlights = [Highlight.get_or_create(highlight['highlight']) for highlight in product['highlight']]
+    # db.session.add(e_product)
+    # # db.session.commit()
+    # print(e_product.highlights)
