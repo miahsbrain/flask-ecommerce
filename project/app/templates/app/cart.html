@@ -1,9 +1,9 @@
 {% extends 'app/base.html' %}
 {% block content %}
 <section class="pt-24 w-full h-full">
-    <section class="relative table w-full py-20 lg:py-24 md:pt-28 bg-gray-200 dark:bg-slate-800">
-        <div class="container mx-auto relative">
-            <div class="grid grid-cols-1 mt-14">
+    <section class="relative table w-full py-16 lg:py-20 md:pt-28 bg-gray-200 dark:bg-slate-800">
+        <div class="container mx-auto relative px-3">
+            <div class="grid grid-cols-1 mt-8">
                 <h3 class="text-3xl leading-normal font-semibold">Fashion</h3>
             </div><!--end grid-->
 
@@ -71,8 +71,8 @@
                 <div class="grid lg:grid-cols-12 md:grid-cols-2 grid-cols-1 mt-6 gap-6">
                     <div class="lg:col-span-9 md:order-1 order-3">
                         <div class="space-x-1">
-                            <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-orange-500 text-white rounded-md mt-2" href="">Shop Now</a>
-                            <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2" href="/shop-cart">Add to Cart</a>
+                            <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-orange-500 text-white rounded-md mt-2" href="{{ url_for('app.shop') }}">Shop Now</a>
+                            <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-orange-500/5 hover:bg-orange-500 text-orange-500 hover:text-white mt-2" href="{{ url_for('app.checkout') }}">Checkout</a>
                         </div>
                     </div>
                     <div class="lg:col-span-3 md:order-2 order-1">

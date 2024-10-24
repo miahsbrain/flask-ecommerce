@@ -1,9 +1,9 @@
 {% extends 'app/base.html' %}
 {% block content %}
 <section class="pt-24 w-full h-full">
-    <section class="relative table w-full py-20 lg:py-24 md:pt-28 bg-gray-200 dark:bg-slate-800">
-        <div class="container mx-auto relative">
-            <div class="grid grid-cols-1 mt-14">
+    <section class="relative table w-full py-16 lg:py-20 md:pt-28 bg-gray-200 dark:bg-slate-800">
+        <div class="container mx-auto relative px-3">
+            <div class="grid grid-cols-1 mt-8">
                 <h3 class="text-3xl leading-normal font-semibold">Fashion</h3>
             </div><!--end grid-->
 
@@ -24,7 +24,7 @@
     <!-- Detail -->
     
 
-    <section class="relative md:py-24 py-16" x-data="productDetail()" x-init="init()">
+    <section class="relative md:py-24 py-16" x-data="productDetail">
         <div class="container relative px-3 mx-auto">
             <div class="grid md:grid-cols-2 grid-cols-1 gap-6 items-center">
                 <div class="">
@@ -100,7 +100,7 @@
                             <h5 class="text-lg font-semibold me-2">Colors:</h5>
                             <div class="space-x-2">
                                 <!-- Color Filter with Radio Buttons (Not Filtered) -->
-                                <template x-for="color in uniqueColors" :key="color">
+                                <template x-for="color in uniqueColors" :key="color.color">
                                     <label class="radio-label">
                                         <input type="radio" name="color" :value="color" @change="filterSizes(color)" :checked="color === selectedColor" class="hidden peer">
                                         <div class="size-6 rounded-full ring-2 ring-gray-200 dark:ring-slate-800 bg-red-600 inline-flex align-middle peer-checked:ring-primary" :style="'background-color: ' + color.hex"></div>
@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     <div class="mt-4 space-x-1">
-                        <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-primary text-white rounded-md mt-2" href="">Shop Now</a>
+                        <a class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center bg-primary text-white rounded-md mt-2" href="{{ url_for('app.checkout') }}">Shop Now</a>
                         <div class="py-2 px-5 inline-block font-semibold tracking-wide align-middle text-base text-center rounded-md bg-primary/5 hover:bg-primary text-primary hover:text-white mt-2 cursor-pointer" @click="addToCart()">Add to Cart</div>
                     </div>
                 </div>
@@ -120,14 +120,16 @@
                     <div class="sticky top-20">
                         <ul class="flex-column p-6 bg-white dark:bg-slate-900 shadow dark:shadow-gray-800 rounded-md" id="myTab"
                             data-tabs-toggle="#myTabContent" role="tablist">
-                            <li class="ms-0"><button
-                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:bg-primary duration-500 text-white bg-primary hover:text-white">Description</button>
+                            <li class="ms-0">
+                                <button class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:bg-primary duration-500 text-white bg-primary hover:text-white">Description</button>
                             </li>
-                            <li class="ms-0"><button
-                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Additional
-                                    Information</button></li>
-                            <li class="ms-0"><button
-                                    class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Review</button>
+                            <li class="ms-0">
+                                <button class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Additional
+                                    Information
+                                </button>
+                            </li>
+                            <li class="ms-0">
+                                <button class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Review</button>
                             </li>
                         </ul>
                     </div>
@@ -149,28 +151,29 @@
 
 
 <script>
-    function productDetail() {
-        return {
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('productDetail', () => ({
             product: JSON.parse('{{ product | tojson | safe }}'),
             
             init() {
                 this.currentImage = this.product.variations[0].images[0];  // Default big image
                 this.selectedQuantity = parseInt(1);
-
+        
                 this.selectedColor = this.product.variations[0].color;   // Default selected color
                 this.selectedSize = this.product.variations[0].size; // Default selected size
                 this.uniqueColors = [];    // Colors available (no filtering)
                 this.uniqueSizes = [];     // Sizes filtered by selected color
                 this.price = this.product.variations[0].price;
-
+        
                 this.uniqueColors = this.getUniqueColors();
                 this.filterSizes(this.selectedColor); // Filter sizes based on the default color
+                console.log(this.product)
             },
-
+        
             changeCurrentImage(img) {
                 this.currentImage = img
             },
-
+        
             updateQuantity(arg) {
                 if (arg == 'neg') {
                     this.selectedQuantity = parseInt(Math.max(1, this.selectedQuantity - 1))
@@ -179,12 +182,12 @@
                     this.selectedQuantity = parseInt(Math.min(10, this.selectedQuantity + 1))
                 }
             },
-
+        
             // Get all unique colors (No filtering required here)
             getUniqueColors() {
                 return [...new Set(this.product.variations.map(v => v.color))];
             },
-
+        
             // Get all unique sizes available for the current selected color
             getUniqueSizes() {
                 const filtered = this.selectedColor
@@ -192,12 +195,12 @@
                     : this.product.variations;
                 return [...new Set(filtered.map(v => v.size))];
             },
-
+        
             // Filter sizes when a color is selected
             filterSizes(color) {
                 this.selectedColor = color;
                 this.uniqueSizes = this.getUniqueSizes();
-
+        
                 // Reset size if it's not in the new filtered list
                 if (!this.uniqueSizes.includes(this.selectedSize)) {
                     this.selectedSize = this.uniqueSizes[0]; // Set the first available size if current one is not valid
@@ -210,7 +213,7 @@
             filterColors(size) {
                 this.selectedSize = size;
             },
-
+        
             // Update the image based on the selected color and size
             updateImage() {
                 const variation = this.product.variations.find(v => v.color === this.selectedColor && v.size === this.selectedSize);
@@ -219,17 +222,17 @@
                     this.price = variation.price
                 }
             },
-
+        
             async addToCart() {
                 const variation = this.product.variations.find(v => v.color === this.selectedColor && v.size === this.selectedSize);
-
+        
                 if (variation) {
                     Alpine.store('cart').addToCart(product_id=this.product.id, variation_id=variation.variation_id, quantity=this.selectedQuantity)
                 }
             }
-
-        };
-    }
+            
+        }));
+    });
 </script>
 </section>
 {% endblock %}
