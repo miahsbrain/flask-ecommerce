@@ -226,29 +226,34 @@ def shop():
     per_page = 2  # Number of products per page
 
     # Start with a base query
-    query = Product.query.join(ProductVariation)
+    query = Product.query
+
+    # Join product variations if color, size filters or brand filters
+    if color_filter or size_filter or brand_filter:
+        query = query.join(ProductVariation)
 
     # Apply filters if any
     if color_filter:
         query = query.join(Color).filter(Color._color.ilike(color_filter))
+    if brand_filter:
+        query = query.join(Brand).filter(Brand.brand.ilike(brand_filter))
     if size_filter:
         query = query.join(Size).filter(Size._size==size_filter)
     if name_filter:
         query = query.filter(Product.name.ilike(f"%{name_filter}%"))
 
     # Execute the query
-    # products = query.offset((page - 1) * per_page).limit(per_page).all()
     products = query.offset((page - 1) * per_page).limit(per_page).all()
     # Paginate the query
     total_products = query.count()
     # Calculate the number of total pages
     total_pages = round(total_products / per_page)
     info = f'Showing {((page - 1) * per_page)}-{(page * per_page)} of {total_products} items'
-    print(info)
+    # print(info)
 
-    print(products)
-    print(total_pages)
-    print(total_products)
+    # print(products)
+    # print(total_pages)
+    # print(total_products)
 
 
     # For each product, choose a default or first variation to display
@@ -257,11 +262,13 @@ def shop():
     sizes = []
     brands = []
 
+    # Gets all the colors to send
     for color in Color.query.all():
         colors.append({
             'color': color.color,
             'hex': color.hex
         })
+    # Gets all the sizes to send
     for size in Size.query.all():
         sizes.append(size.size)
     for brand in Brand.query.all():
