@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from project.utils.auth import authenticate, create_user, validate_email, update_password
 from project.extensions.dependencies import db
 from project.models.users import ProfilePicture
-from project.models.products import Product, Cart, CartItem, Order, OrderItem, ShippingAddress, Payment
+from project.models.products import Product, ProductVariation, Cart, CartItem, Order, OrderItem, ShippingAddress, Payment, Color, Brand, Size
 from functools import reduce
 import requests
 
@@ -215,10 +215,66 @@ def social():
 
 @app.route('/shop')
 def shop():
-    products = Product.query.all()  # Get all products
+    # Get the filter values from the request args
+    name_filter = request.args.get('s', '')
+    color_filter = request.args.get('color', '')
+    brand_filter = request.args.get('brand', '')
+    size_filter = request.args.get('size', '')
+
+    # Get page from query params, default to 1
+    page = request.args.get('page', 1, type=int)
+    per_page = 2  # Number of products per page
+
+    # Start with a base query
+    query = Product.query
+
+    # Join product variations if color, size filters or brand filters
+    if color_filter or size_filter or brand_filter:
+        query = query.join(ProductVariation)
+
+    # Apply filters if any
+    if color_filter:
+        query = query.join(Color).filter(Color._color.ilike(color_filter))
+    if brand_filter:
+        query = query.join(Brand).filter(Brand.brand.ilike(brand_filter))
+    if size_filter:
+        query = query.join(Size).filter(Size._size==size_filter)
+    if name_filter:
+        query = query.filter(Product.name.ilike(f"%{name_filter}%"))
+
+    # Execute the query
+    products = query.offset((page - 1) * per_page).limit(per_page).all()
+    # Paginate the query
+    total_products = query.count()
+    # Calculate the number of total pages
+    total_pages = round(total_products / per_page)
+    info = f'Showing {((page - 1) * per_page)}-{(page * per_page)} of {total_products} items'
+    # print(info)
+
+    # print(products)
+    # print(total_pages)
+    # print(total_products)
+
 
     # For each product, choose a default or first variation to display
     product_data = []
+    colors = []
+    sizes = []
+    brands = []
+
+    # Gets all the colors to send
+    for color in Color.query.all():
+        colors.append({
+            'color': color.color,
+            'hex': color.hex
+        })
+    # Gets all the sizes to send
+    for size in Size.query.all():
+        sizes.append(size.size)
+    for brand in Brand.query.all():
+        brands.append(brand.brand)
+
+
     for product in products:
         if product.variations:  # Ensure the product has variations
             primary_variation = product.variations[0]  # Default to the first variation
@@ -229,11 +285,15 @@ def shop():
                 'name': product.name,
                 'description': product.description,
                 'price': primary_variation.price,
+                'sale': primary_variation.sale,
+                'featured': primary_variation.featured,
                 'variation_id': primary_variation.id,
                 'variation': f'{primary_variation.color} {primary_variation.size}',
                 'image_url': primary_image
             })
-    return render_template('app/shop.html', products=product_data)
+
+    return render_template('app/shop.html', products=product_data, colors=colors, sizes=sizes, brands=brands, page=page, total_pages=total_pages, info=info)
+
 
 @app.route('/product_detail/<int:product_id>')
 def product_details(product_id):
@@ -246,17 +306,21 @@ def product_details(product_id):
         images = [image.image_url for image in variation.images]
         variations.append({
             'variation_id': variation.id,
-            'color': variation.color,
-            'size': variation.size,
+            'color': {'color':variation.color.color, 'hex':variation.color.hex},
+            'size': variation.size.size,
             'price': variation.price,
             'images': images,
         })
+
+    print(product.highlights)
 
     product_data = {
         'id': product_id,
         'name': product.name,
         'description': product.description,
-        'base_price': product.price,
+        'overview': product.overview,
+        'highlights': [highlight.highlight for highlight in product.highlights],
+        'brand': product.brand.brand,
         'variations': variations
     }
 
@@ -273,8 +337,8 @@ def cart():
         'variation_id': item.variation_id,
         'name': item.product_variation.product.name,
         'price': round(float(item.product_variation.price), 2),
-        'size': item.product_variation.size,
-        'color': item.product_variation.color,
+        'size': item.product_variation.size.size,
+        'color': {'color':item.product_variation.color.color, 'hex':item.product_variation.color.hex},
         'quantity': item.quantity,
         'image': item.product_variation.images[0].image_url,
         'total': round(float(item.product_variation.price * item.quantity), 2)
@@ -291,12 +355,12 @@ def validate_cart():
         'product_id': item.product_variation.product.id,
         'variation_id': item.variation_id,
         'name': item.product_variation.product.name,
-        'price': float(item.product_variation.price),
-        'size': item.product_variation.size,
-        'color': item.product_variation.color,
+        'price': round(float(item.product_variation.price), 2),
+        'size': item.product_variation.size.size,
+        'color': {'color':item.product_variation.color.color, 'hex':item.product_variation.color.hex},
         'quantity': item.quantity,
         'image': item.product_variation.images[0].image_url,
-        'total': round(float(item.product_variation.product.price * item.quantity), 2)
+        'total': round(float(item.product_variation.price * item.quantity), 2)
     } for item in cart.items]
     
     return jsonify({'cart': items})
@@ -333,12 +397,12 @@ def add_to_cart():
             'product_id': item.product_variation.product.id,
             'variation_id': item.variation_id,
             'name': item.product_variation.product.name,
-            'price': float(item.product_variation.price),
-            'size': item.product_variation.size,
-            'color': item.product_variation.color,
+            'price': round(float(item.product_variation.price), 2),
+            'size': item.product_variation.size.size,
+            'color': {'color':item.product_variation.color.color, 'hex':item.product_variation.color.hex},
             'quantity': item.quantity,
             'image': item.product_variation.images[0].image_url,
-            'total': round(float(item.product_variation.product.price * item.quantity), 2)
+            'total': round(float(item.product_variation.price * item.quantity), 2)
         } for item in cart.items]
         
         return jsonify({'cart': items})
@@ -368,12 +432,12 @@ def update_cart():
         'product_id': item.product_variation.product.id,
         'variation_id': item.variation_id,
         'name': item.product_variation.product.name,
-        'price': float(item.product_variation.price),
-        'size': item.product_variation.size,
-        'color': item.product_variation.color,
+        'price': round(float(item.product_variation.price), 2),
+        'size': item.product_variation.size.size,
+        'color': {'color':item.product_variation.color.color, 'hex':item.product_variation.color.hex},
         'quantity': item.quantity,
         'image': item.product_variation.images[0].image_url,
-        'total': round(float(item.product_variation.product.price * item.quantity), 2)
+        'total': round(float(item.product_variation.price * item.quantity), 2)
     } for item in cart.items]
     
     return jsonify({'cart': items})
@@ -384,13 +448,14 @@ def checkout():
     items = [{
         'id': item.id,
         'product_id': item.product_variation.product.id,
+        'variation_id': item.variation_id,
         'name': item.product_variation.product.name,
         'price': round(float(item.product_variation.price), 2),
-        'size': item.product_variation.size,
-        'color': item.product_variation.color,
+        'size': item.product_variation.size.size,
+        'color': {'color':item.product_variation.color.color, 'hex':item.product_variation.color.hex},
         'quantity': item.quantity,
         'image': item.product_variation.images[0].image_url,
-        'total': round(float(item.product_variation.product.price * item.quantity), 2)
+        'total': round(float(item.product_variation.price * item.quantity), 2)
     } for item in cart.items]
 
     if request.method == 'GET':

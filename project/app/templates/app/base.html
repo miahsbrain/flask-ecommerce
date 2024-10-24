@@ -19,9 +19,10 @@
     {% endblock %}
 </head>
 <body
-    x-data="{ isHeaderBlur: false }"
+    x-data="{ isHeaderBlur: false, mobileOpen: false }"
     x-init="window.addEventListener('scroll', () => { isHeaderBlur = window.scrollY > 40; })"
-    class="">
+    class=""
+    :class="{ 'overflow-hidden': mobileOpen }">
     <!-- wrapper -->
     <div class="min-h-screen bg-slate-50 dark:bg-gray-900">
         <header
@@ -30,18 +31,66 @@
             >
             <nav class="container mx-auto">
                 <div class="flex justify-between items-center">
-                    <div class="text-2xl font-bold text-gray-800 py-4">
-                        <a href="{{ url_for('app.index') }}">Lavender</a>
+                    <!-- Mobile hamburger menu -->
+                    <div class="flex items-center py-4">
+                        <!-- Button to open the menu -->
+                        <button class="size-9 mr-3" @click="mobileOpen = true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" class="bg-slate-200 rounded-md p-[.2rem]" viewBox="0 0 24 24">
+                                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                    <path d="M5 5L19 5M5 19L19 19" />
+                                    <path d="M5 12H19" />
+                                </g>
+                            </svg>
+                        </button>
+                        
+                        <!-- Background overlay -->
+                        <div x-show="mobileOpen" x-cloak class="fixed inset-0 w-screen bg-black h-screen bg-opacity-50 z-40" x-transition.opacity @click="mobileOpen = false"></div>
+                    
+                        <!-- Sliding menu -->
+                        <div class="fixed inset-y-0 left-0 w-[14rem] max-w-xs bg-slate-50 h-screen z-[80] transform transition-transform duration-300" x-cloak
+                            :class="mobileOpen ? 'translate-x-0' : '-translate-x-full'"
+                            x-transition:enter="transition transform ease-out duration-300"
+                            x-transition:leave="transition transform ease-in duration-300">
+                            <!-- Close Button (SVG) -->
+                            <div class="px-4 flex items-center">
+                                <button class="size-9 mr-3" @click="mobileOpen = false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" class="bg-slate-200 rounded-md p-[.2rem]" viewBox="0 0 24 24">
+                                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                            <path d="M12 12H12" opacity="0" />
+                                            <path d="M5 5L19 19M5 19L19 5" />
+                                        </g>
+                                    </svg>
+                                </button>
+                                <div class="text-2xl font-bold text-gray-800 py-4">
+                                    <a href="{{ url_for('app.index') }}">Lavender</a>
+                                </div>
+                            </div>
+                    
+                            <!-- Menu Items -->
+                            <nav class="mt-2">
+                                <div class="space-y-4 px-4 flex flex-col">
+                                    <a href="{{ url_for('app.index') }}" class="text-gray-700 font-medium text-lg">Home</a>
+                                    <a href="{{ url_for('app.shop') }}" class="text-gray-700 font-medium text-lg">Shop</a>
+                                    <a href="{{ url_for('app.index') }}" class="text-gray-700 font-medium text-lg">About</a>
+                                    <a href="{{ url_for('app.index') }}" class="text-gray-700 font-medium text-lg">Contact</a>
+                                </div>
+                            </nav>
+                        
+                        </div>
+                        <!-- Header -->
+                        <div class="text-2xl font-bold text-gray-800 py-4 hidden md:block">
+                            <a href="{{ url_for('app.index') }}">Lavender</a>
+                        </div>
                     </div>
                     <div class="hidden md:block">
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-4 px-6 rounded-md transition-colors ease-out duration-150" :class="isHeaderBlur ? 'bg-transparent' : 'bg-white bg-opacity-80'">
                             <a href="{{ url_for('app.shop') }}" class="font-semibold hover:text-primary text-[1.1rem] p-2">Shop</a>
                             <a href="" class="font-semibold hover:text-primary text-[1.1rem] p-2">Sale</a>
                             <a href="" class="font-semibold hover:text-primary text-[1.1rem] p-2">Contact</a>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="relative" x-data="{ dropDown : false }">
+                        <div class="relative w-full" x-data="{ dropDown : false }">
                             <div
                             class="size-9 aspect-square rounded-full overflow-hidden bg-primary text-white p-2 cursor-pointer"
                             @click=" dropDown =! dropDown "
@@ -58,27 +107,33 @@
                             x-show="dropDown"
                             @click.outside=" dropDown = false "
                             >
-                                <div class="relative">
-                                    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="absolute size-4 top-[9px] end-3 text-slate-900 dark:text-white" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    </svg>
-                                    <input type="text" class="h-9 px-3 pe-10 w-full border-0 focus:ring-0 outline-none bg-white dark:bg-slate-900" name="s" id="searchItem" placeholder="Search...">
-                                </div>
+                                <form action="{{ url_for('app.shop') }}" class="w-full" method="GET" x-ref="headSearchForm">
+                                    <div class="relative">
+                                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="absolute size-4 top-[9px] end-3 text-slate-900 dark:text-white hover:text-primary" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" @click="$refs.headSearchForm.submit()">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                        <input type="text" class="h-9 px-3 pe-10 w-full border-0 focus:ring-0 outline-none bg-white dark:bg-slate-900" name="s" id="searchItem" placeholder="Search..." @keyup.enter="$refs.headSearchForm.submit()">
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="size-9 aspect-square rounded-full overflow-hidden bg-primary text-white p-2 cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                    d="M17 18a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2c0-1.11.89-2 2-2M1 2h3.27l.94 2H20a1 1 0 0 1 1 1c0 .17-.05.34-.12.5l-3.58 6.47c-.34.61-1 1.03-1.75 1.03H8.1l-.9 1.63l-.03.12a.25.25 0 0 0 .25.25H19v2H7a2 2 0 0 1-2-2c0-.35.09-.68.24-.96l1.36-2.45L3 4H1zm6 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2c0-1.11.89-2 2-2m9-7l2.78-5H6.14l2.36 5z" />
-                            </svg>
-                        </div>
-                        <div class="size-9 aspect-square rounded-full overflow-hidden bg-primary text-white p-2 cursor-pointer">
+                        <!-- Cart svg -->
+                        <a href="{{ url_for('app.cart') }}">
+                            <div class="size-9 aspect-square rounded-full bg-primary text-white p-2 cursor-pointer relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" class="overflow-hidden">
+                                    <path fill="currentColor"
+                                        d="M17 18a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2c0-1.11.89-2 2-2M1 2h3.27l.94 2H20a1 1 0 0 1 1 1c0 .17-.05.34-.12.5l-3.58 6.47c-.34.61-1 1.03-1.75 1.03H8.1l-.9 1.63l-.03.12a.25.25 0 0 0 .25.25H19v2H7a2 2 0 0 1-2-2c0-.35.09-.68.24-.96l1.36-2.45L3 4H1zm6 16a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2c0-1.11.89-2 2-2m9-7l2.78-5H6.14l2.36 5z" />
+                                </svg>
+                                <div x-text="$store.cart.itemsTotal" class="z-20 bg-red-500 absolute end-0 -bottom-0 size-4 rounded-full text-sm text-center flex items-center justify-center"></div>
+                            </div>
+                        </a>
+                        <!-- <div class="size-9 aspect-square rounded-full overflow-hidden bg-primary text-white p-2 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
                                 <path fill="currentColor"
                                     d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3" />
                             </svg>
-                        </div>
+                        </div> -->
                         <div class="relative" x-data="{ dropDown : false }">
                             <div
                             class="size-9 aspect-square rounded-full overflow-hidden border border-primary cursor-pointer"
@@ -171,22 +226,7 @@
                             {% endif %}
                             </div>
                         </div>
-                        <div class="md:hidden size-9">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 5L12 12L19 5M12 12H12M5 19L12 12L19 19">
-                                    <animate fill="freeze" attributeName="d" dur="0.4s"
-                                        values="M5 5L12 12L19 5M12 12H12M5 19L12 12L19 19;M5 5L12 5L19 5M5 12H19M5 19L12 19L19 19" />
-                                </path>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="hidden" width="1em" height="1em" viewBox="0 0 24 24">
-                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 5L12 5L19 5M5 12H19M5 19L12 19L19 19">
-                                    <animate fill="freeze" attributeName="d" dur="0.4s"
-                                        values="M5 5L12 5L19 5M5 12H19M5 19L12 19L19 19;M5 5L12 12L19 5M12 12H12M5 19L12 12L19 19" />
-                                </path>
-                            </svg>
-                        </div>
+                        
                     </div>
                 </div>
             </nav>
@@ -220,27 +260,19 @@
             isOpen: false,
             cart_items: JSON.parse(localStorage.getItem('cart_items')),
             total: 0,
+            itemsTotal: 0,
 
             async init() {
-                this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+                this.itemsTotal = this.cart_items.reduce((sum, item) => sum + item.quantity, 0).toFixed(0);
             },
 
             toggle() {
                 this.isOpen = !this.isOpen
             },
 
-            async syncCart() {
-                try {
-                    await fetch('/validate_cart', {
-                        method: 'GET',
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data)
-                    })
-                } catch (error) {
-                    console.error('Error adding to cart:', error);
-                }
+            async syncCart(cart) {
+                localStorage.setItem('cart_items', JSON.stringify(cart));
             },
 
             async updateQuantity(itemId, newQuantity) {
@@ -266,6 +298,8 @@
                         .then(response => response.json())
                         .then(data => {
                             localStorage.setItem('cart_items', JSON.stringify(data.cart));
+                            this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+                            this.itemsTotal = this.cart_items.reduce((sum, item) => sum + item.quantity, 0).toFixed(0);
                         })
                     } catch (error) {
                         console.error('Error adding to cart:', error);
@@ -291,6 +325,8 @@
                         .then(response => response.json())
                         .then(data => {
                             localStorage.setItem('cart_items', JSON.stringify(data.cart));
+                            this.total = this.cart_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+                            this.itemsTotal = this.cart_items.reduce((sum, item) => sum + item.quantity, 0).toFixed(0);
                         })
                 } catch (error) {
                     console.error('Error adding to cart:', error);

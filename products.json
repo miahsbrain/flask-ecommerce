@@ -1,0 +1,303 @@
+[
+    {
+        "name": "Stylish T-Shirt",
+        "description": "A cool, stylish t-shirt available in multiple colors and sizes.",
+        "overview": "A stylish, durable t-shirt that offers maximum comfort.",
+        "brand": "Givenchy",
+        "stock": 100,
+        "highlight": [
+            {
+                "highlight": "Durable"
+            },
+            {
+                "highlight": "Comfortable"
+            }
+        ],
+        "variations": [
+            {
+                "color": {"color":"Red", "hex": "#FF0000"},
+                "size": "M",
+                "price": 19.99,
+                "stock": 50,
+                "sale": 19.99,
+                "featured": false,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/3854982/pexels-photo-3854982.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            },
+            {
+                "color": {"color":"Blue", "hex": "#0000FF"},
+                "size": "L",
+                "price": 21.99,
+                "stock": 30,
+                "sale": 18.99,
+                "featured": false,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/28994261/pexels-photo-28994261/free-photo-of-trendy-streetwear-fashion-woman-in-urban-setting.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Premium Hoodie",
+        "description": "Warm and stylish hoodie with a comfortable fit.",
+        "overview": "Stay warm with this cozy, stylish hoodie.",
+        "brand": "Adidas",
+        "stock": 120,
+        "highlight": [
+            {
+                "highlight": "Warm"
+            },
+            {
+                "highlight": "Soft Fabric"
+            }
+        ],
+        "variations": [
+            {
+                "color": {"color":"Black", "hex": "#000000"},
+                "size": "L",
+                "price": 39.99,
+                "stock": 80,
+                "sale": 35.99,
+                "featured": false,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/28994421/pexels-photo-28994421/free-photo-of-street-style-with-inspirational-hoodie-quote.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            },
+            {
+                "color": {"color":"Gray", "hex": "#808080"},
+                "size": "XL",
+                "price": 41.99,
+                "stock": 40,
+                "sale": 38.99,
+                "featured": true,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/20487214/pexels-photo-20487214/free-photo-of-man-in-hoodie-and-with-short-hair.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Casual Sneakers",
+        "description": "Comfortable sneakers for everyday wear.",
+        "overview": "Durable and fashionable sneakers for casual use.",
+        "brand": "Nike",
+        "stock": 200,
+        "highlight": [
+            {
+                "highlight": "Breathable"
+            },
+            {
+                "highlight": "Stylish"
+            }
+        ],
+        "variations": [
+            {
+                "color": {"color":"White", "hex": "#FFFFFF"},
+                "size": "M",
+                "price": 59.99,
+                "stock": 100,
+                "sale": 54.99,
+                "featured": false,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/1027130/pexels-photo-1027130.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            },
+            {
+                "color": {"color":"Black", "hex": "#000000"},
+                "size": "L",
+                "price": 61.99,
+                "stock": 50,
+                "sale": 58.99,
+                "featured": true,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/8283207/pexels-photo-8283207.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Slim Fit Jeans",
+        "description": "Classic denim jeans with a slim fit.",
+        "overview": "Versatile and stylish slim-fit jeans for any occasion.",
+        "brand": "Levi's",
+        "stock": 150,
+        "highlight": [
+            {
+                "highlight": "Stretchable"
+            },
+            {
+                "highlight": "Durable"
+            }
+        ],
+        "variations": [
+            {
+                "color": {"color":"Navy", "hex": "#000080"},
+                "size": "M",
+                "price": 45.99,
+                "stock": 70,
+                "sale": 42.99,
+                "featured": true,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/4940232/pexels-photo-4940232.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                ]
+            },
+            {
+                "color": {"color":"Gray", "hex": "#808080"},
+                "size": "L",
+                "price": 47.99,
+                "stock": 50,
+                "sale": 43.99,
+                "featured": false,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/11201607/pexels-photo-11201607.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Graphic T-Shirt",
+        "description": "Trendy graphic t-shirt with unique designs.",
+        "overview": "Showcase your style with this graphic t-shirt.",
+        "brand": "Zara",
+        "stock": 90,
+        "highlight": [
+            {
+                "highlight": "Soft Fabric"
+            },
+            {
+                "highlight": "Breathable"
+            }
+        ],
+        "variations": [
+            {
+                "color": {"color":"White", "hex": "#FFFFFF"},
+                "size": "S",
+                "price": 15.99,
+                "stock": 40,
+                "sale": 13.99,
+                "featured": true,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/24287015/pexels-photo-24287015/free-photo-of-young-woman-in-a-casual-outfit-standing-in-a-garage.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            },
+            {
+                "color": {"color":"Beige", "hex": "#F5F5DC"},
+                "size": "M",
+                "price": 17.99,
+                "stock": 50,
+                "sale": 16.99,
+                "featured": false,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/21628789/pexels-photo-21628789/free-photo-of-portrait-of-woman-in-t-shirt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Classic Dress Shirt",
+        "description": "A formal dress shirt for professional settings.",
+        "overview": "Elevate your look with this classic dress shirt.",
+        "brand": "Ralph Lauren",
+        "stock": 60,
+        "highlight": [
+            {
+                "highlight": "Wrinkle-Free"
+            },
+            {
+                "highlight": "Premium Fabric"
+            }
+        ],
+        "variations": [
+            {
+                "color": {"color":"Blue", "hex": "#0000FF"},
+                "size": "M",
+                "price": 29.99,
+                "stock": 30,
+                "sale": 27.99,
+                "featured": true,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/19431980/pexels-photo-19431980/free-photo-of-jacket-on-clothing-store-display.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            },
+            {
+                "color": {"color":"White", "hex": "#FFFFFF"},
+                "size": "L",
+                "price": 32.99,
+                "stock": 30,
+                "sale": 30.99,
+                "featured": false,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/19129083/pexels-photo-19129083/free-photo-of-blue-jacket-on-a-mannequin.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Sports Shorts",
+        "description": "Breathable sports shorts for active lifestyles.",
+        "overview": "Perform your best with these athletic shorts.",
+        "brand": "Puma",
+        "stock": 180,
+        "highlight": [
+            {
+                "highlight": "Lightweight"
+            },
+            {
+                "highlight": "Breathable"
+            }
+        ],
+        "variations": [
+            {
+                "color": {"color":"Black", "hex": "#000000"},
+                "size": "L",
+                "price": 22.99,
+                "stock": 100,
+                "sale": 19.99,
+                "featured": true,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/15326688/pexels-photo-15326688/free-photo-of-a-woman-wearing-red-sports-bra-and-shorts.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            },
+            {
+                "color": {"color":"Gray", "hex": "#808080"},
+                "size": "XL",
+                "price": 24.99,
+                "stock": 80,
+                "sale": 21.99,
+                "featured": false,
+                "images": [
+                    {
+                        "image_url": "https://images.pexels.com/photos/5202350/pexels-photo-5202350.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    }
+                ]
+            }
+        ]
+    }
+]
