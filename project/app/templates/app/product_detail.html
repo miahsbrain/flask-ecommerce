@@ -1,11 +1,11 @@
 {% extends 'app/base.html' %}
 {% block content %}
 <section class="pt-24 w-full h-full">
-    <section class="relative table w-full py-16 lg:py-20 md:pt-28 bg-gray-200 dark:bg-slate-800">
+    <!-- <section class="relative table w-full py-16 lg:py-20 md:pt-28 bg-gray-200 dark:bg-slate-800">
         <div class="container mx-auto relative px-3">
             <div class="grid grid-cols-1 mt-8">
                 <h3 class="text-3xl leading-normal font-semibold">Fashion</h3>
-            </div><!--end grid-->
+            </div>
 
             <div class="relative mt-3">
                 <div class="tracking-[0.5px] mb-0 inline-block">
@@ -16,66 +16,81 @@
                     <div
                         class="inline-block text-base text-slate-950 dark:text-white mx-0.5 ltr:rotate-0 rtl:rotate-180">
                         &rarr;</div>
-                    <div class="inline-block uppercase text-[13px] font-bold text-primary" aria-current="page">Shop Detail</div>
+                    <div class="inline-block uppercase text-[13px] font-bold text-primary" aria-current="page">Product Detail</div>
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- Detail -->
     
 
-    <section class="relative md:py-24 py-16" x-data="productDetail">
+    <section class="relative md:py-16 pb-8" x-data="productDetail">
         <div class="container relative px-3 mx-auto">
             <div class="grid md:grid-cols-2 grid-cols-1 gap-6 items-center">
                 <div class="">
-                    <div class="product-imgs flex">
-                        <div class="w-1/6">
-                            <div class="">
-                                <div class="p-px">
-                                    {% for variation in product.variations %}
-                                        {% for img in variation.images %}  
-                                        <div @click="changeCurrentImage('{{ img }}')" class="mb-1 last-of-type:mb-0">
-                                            <img src="{{ img }}" class="shadow dark:shadow-gray-800 w-full h-auto" alt="">
-                                        </div>
-                                        {% endfor %}
+                    <div class="flex max-h-[23rem] md:max-h-full gap-1">
+                        <div class="w-1/6 md:max-h-[28.2rem] lg:max-h-[38.2rem] overflow-auto">
+                            <div class="p-px h-full overflow-auto">
+                                {% for variation in product.variations %}
+                                    {% for img in variation.images %}  
+                                    <div @click="changeCurrentImage('{{ img }}')" class="mb-1 last-of-type:mb-0">
+                                        <img src="{{ img }}" class="shadow dark:shadow-gray-800 w-full h-auto" alt="">
+                                    </div>
                                     {% endfor %}
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
-                        <div class="img-display shadow dark:shadow-gray-800 m-px w-5/6">
-                            <div class="img-showcase flex w-full duration-500">
-                                <img :src="currentImage" class="min-w-full" alt="{{ product.name }}">
+                        <div class="shrink-0 shadow dark:shadow-gray-800 m-px w-5/6">
+                            <div class="flex w-full h-full md:max-h-[28.2rem] lg:max-h-[38.2rem] duration-500">
+                                <img :src="currentImage" class="min-w-full min-h-full object-contain object-center" alt="{{ product.name }}">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="sticky top-20">
                     <h5 class="text-2xl font-semibold">{{ product.name }}</h5>
-                    <div class="mt-2"><span class="text-slate-400 font-semibold me-1" x-text="'$ '+price+' USD'">
-                        <del class="text-red-600">$21USD</del></span>
+                    <div class="mt-2">
+                        <!-- Sale Price (only shows when there is a sale) -->
+                        <span x-show="sale" class="text-slate-400 font-semibold me-1" x-text="'$ ' + sale + ' USD'"></span>
+                        
+                        <!-- Regular Price with strikethrough if sale is active -->
+                        <span>
+                            <del x-show="sale" class="text-red-600" x-text="'$ ' + price + ' USD'"></del>
+                            <span x-show="!sale" x-text="'$ ' + price + ' USD'" class="text-slate-400 font-semibold"></span>
+                        </span>
+
                         <!-- Rating -->
-                        <ul class="list-none inline-block text-orange-400">
+                        <!-- <ul class="list-none inline-block text-orange-400">
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
                             <li class="inline"><i class="mdi mdi-star text-lg"></i></li>
                             <li class="inline text-slate-400 font-semibold">4.8 (45)</li>
-                        </ul>
+                        </ul> -->
                     </div>
                     <div class="mt-4">
                         <h5 class="text-lg font-semibold">Overview:</h5>
-                        <p class="text-slate-400 mt-2">{{ product.description }}</p>
-                        <!-- <ul class="list-none text-slate-400 mt-4">
-                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-primary text-xl me-2"></i>
-                                Digital Marketing Solutions for Tomorrow</li>
-                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-primary text-xl me-2"></i>
-                                Our Talented &amp; Experienced Marketing Agency</li>
-                            <li class="mb-1 flex ms-0"><i class="mdi mdi-check-circle-outline text-primary text-xl me-2"></i>
-                                Create your own skin to match your brand</li>
-                        </ul> -->
+                        <p class="text-slate-400 mt-2">{{ product.overview }}</p>
+                        <div class="text-slate-400 mt-4">
+                            {% for highlight in product.highlights %}
+                            <div class="mb-1 flex ms-0">
+                                <span class="text-primary mr-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                        <g fill="currentColor">
+                                            <path d="M10.243 16.314L6 12.07l1.414-1.414l2.829 2.828l5.656-5.657l1.415 1.415z" />
+                                            <path fill-rule="evenodd"
+                                                d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12m11 9a9 9 0 1 1 0-18a9 9 0 0 1 0 18"
+                                                clip-rule="evenodd" />
+                                        </g>
+                                    </svg>
+                                </span>
+                                {{ highlight }}
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div class="grid lg:grid-cols-2 grid-cols-1 gap-6 mt-4">
+                    <div class="grid xl:grid-cols-2 grid-cols-1 gap-6 mt-4">
                         <div class="flex items-center">
                             <h5 class="text-lg font-semibold me-2">Size:</h5>
                             <div class="space-x-1">
@@ -123,22 +138,19 @@
                             <li class="ms-0">
                                 <button class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:bg-primary duration-500 text-white bg-primary hover:text-white">Description</button>
                             </li>
-                            <li class="ms-0">
-                                <button class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Additional
-                                    Information
-                                </button>
+                            <!-- <li class="ms-0">
+                                <button class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Additional Information </button>
                             </li>
                             <li class="ms-0">
                                 <button class="px-4 py-2 text-start text-base font-semibold rounded-md w-full hover:text-primary duration-500 ">Review</button>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
                 <div class="lg:col-span-9 md:col-span-7">
-                    <div id="myTabContent" class="p-6 bg-white dark:bg-slate-900 shadow dark:shadow-gray-800 rounded-md">
+                    <div class="p-6 bg-white dark:bg-slate-900 shadow dark:shadow-gray-800 rounded-md">
                         <div>
-                            <p class="text-slate-400">Due to its widespread use as filler text for layouts, non-readability is of great importance: human perception is tuned to recognize certain patterns and repetitions in texts. If the distribution of letters and 'words' is random, the reader will not be distracted from making a (typography), or the distribution of text on the page (layout or type area). For this reason, dummy text usually consists of a more or less random series of words or syllables.
-                            </p>
+                            <p class="text-slate-400">{{ product.description }}</p>
                         </div>
                     </div>
                 </div>
@@ -164,10 +176,10 @@
                 this.uniqueColors = [];    // Colors available (no filtering)
                 this.uniqueSizes = [];     // Sizes filtered by selected color
                 this.price = this.product.variations[0].price;
+                this.sale = this.product.variations[0].sale;
         
                 this.uniqueColors = this.getUniqueColors();
                 this.filterSizes(this.selectedColor); // Filter sizes based on the default color
-                console.log(this.product)
             },
         
             changeCurrentImage(img) {
@@ -220,6 +232,7 @@
                 if (variation) {
                     this.currentImage = variation.images[0];
                     this.price = variation.price
+                    this.sale = variation.sale
                 }
             },
         

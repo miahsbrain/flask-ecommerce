@@ -309,10 +309,10 @@ def product_details(product_id):
             'color': {'color':variation.color.color, 'hex':variation.color.hex},
             'size': variation.size.size,
             'price': variation.price,
+            'sale': variation.sale,
             'images': images,
         })
 
-    print(product.highlights)
 
     product_data = {
         'id': product_id,
