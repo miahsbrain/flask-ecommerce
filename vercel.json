@@ -1,8 +1,18 @@
 {
-    "rewrites": [
+    "version": 2,
+    "builds": [
         {
-            "source": "/(.*)",
-            "destination": "/run"
+            "src": "run.py",
+            "use": "@vercel/python",
+            "config": {
+                "maxLambdaSize": "25mb"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "run.py"
         }
     ]
 }
