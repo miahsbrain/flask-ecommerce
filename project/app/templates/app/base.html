@@ -32,9 +32,9 @@
             <nav class="container mx-auto">
                 <div class="flex justify-between items-center">
                     <!-- Mobile hamburger menu -->
-                    <div class="flex items-center py-4">
+                    <div class="flex items-center py-3 md:py-0">
                         <!-- Button to open the menu -->
-                        <button class="size-9 mr-3" @click="mobileOpen = true">
+                        <button class="size-9 mr-3 block md:hidden" @click="mobileOpen = true">
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" class="bg-slate-200 rounded-md p-[.2rem]" viewBox="0 0 24 24">
                                 <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                                     <path d="M5 5L19 5M5 19L19 19" />
@@ -78,7 +78,7 @@
                         
                         </div>
                         <!-- Header -->
-                        <div class="text-2xl font-bold text-gray-800 py-4 hidden md:block">
+                        <div class="text-2xl font-bold text-gray-800 py-3 hidden md:block">
                             <a href="{{ url_for('app.index') }}">Lavender</a>
                         </div>
                     </div>
