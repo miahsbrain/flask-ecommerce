@@ -13,10 +13,10 @@ from project.models.products import(Product,
                                     ShippingAddress,
                                     Payment)
 from sqlalchemy import delete
-from run import main_app
+from run import app
 from project.extensions.dependencies import db
 
-with main_app.app_context():
+with app.app_context():
     Product.query.delete()
     ProductVariation.query.delete()
     ProductVariationImage.query.delete()

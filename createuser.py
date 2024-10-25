@@ -1,6 +1,6 @@
 from project.extensions.dependencies import db, bcrypt
 from project.models.users import User
-from project.main import create_app
+from run import app
 
 def create_user():
     first_name = input('Enter your first name: ')
@@ -9,7 +9,7 @@ def create_user():
     password = input('Enter your password: ')
     hashed_password = bcrypt.generate_password_hash(password)
     user = User(first_name=first_name, last_name=last_name, email=email, password=hashed_password)
-    with create_app().app_context():
+    with app.app_context():
         db.session.add(user)
         db.session.commit()
 
@@ -20,7 +20,7 @@ def createsuper_user():
     password = input('Enter your password: ')
     hashed_password = bcrypt.generate_password_hash(password)
     user = User(first_name=first_name, last_name=last_name, email=email, is_admin=True, password=hashed_password)
-    with create_app().app_context():
+    with app.app_context():
         db.session.add(user)
         db.session.commit()
 

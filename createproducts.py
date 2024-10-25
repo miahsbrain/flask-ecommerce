@@ -1,5 +1,5 @@
 from project.models.products import Product, ProductVariation, ProductVariationImage, Brand, Color, Highlight, Size
-from run import main_app
+from run import app
 from project.extensions.dependencies import db
 import json
 
@@ -52,7 +52,7 @@ with open('products.json', 'r') as f:
 
     # db.session.commit()
 
-with main_app.app_context():
+with app.app_context():
     # Create a new product
     for product in data:
         new_product = Product(
